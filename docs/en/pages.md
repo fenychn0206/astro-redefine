@@ -61,7 +61,7 @@ Refresh the vendored data with:
 node scripts/fetch-friends.mjs
 ```
 
-You can also add an npm script and run `npm run friends:sync`.
+You can also add a pnpm script and run `pnpm run friends:sync`.
 
 ## Essays
 

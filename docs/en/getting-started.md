@@ -6,20 +6,20 @@ description: Install, run and deploy Redefine for Astro.
 ## Requirements
 
 - Node.js `>= 22`
-- npm, pnpm or yarn
+- pnpm 10+
 
 ## Install
 
 ```bash
 git clone https://github.example.com/you/astro-redefine.git
 cd astro-redefine
-npm install
+pnpm install
 ```
 
 ## Development
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 The default URL is <http://localhost:4321>. The dev server supports hot updates.
@@ -27,8 +27,8 @@ The default URL is <http://localhost:4321>. The dev server supports hot updates.
 ## Build
 
 ```bash
-npm run build
-npm run preview
+pnpm run build
+pnpm run preview
 ```
 
 The output is written to `dist/` and can be hosted on any static file service.

@@ -5,10 +5,10 @@
 ## 快速开始
 
 ```bash
-npm install
-npm run dev      # http://localhost:4321
-npm run build    # 输出到 dist/
-npm run preview
+pnpm install
+pnpm run dev      # http://localhost:4321
+pnpm run build    # 输出到 dist/
+pnpm run preview
 ```
 
 ## 目录结构

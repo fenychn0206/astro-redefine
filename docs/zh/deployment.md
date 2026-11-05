@@ -6,8 +6,8 @@ description: 构建、静态托管、站点地址和 Artalk 跨域。
 ## 构建
 
 ```bash
-npm run build
-npm run preview
+pnpm run build
+pnpm run preview
 ```
 
 构建结果是 `dist/` 目录中的静态文件，可以部署到任何支持静态文件的平台。
@@ -32,7 +32,7 @@ site: {
 常见平台都可以直接发布 `dist/`：
 
 ```text
-Build command: npm run build
+Build command: pnpm run build
 Output directory: dist
 Node version: 22+
 ```
@@ -61,4 +61,4 @@ Artalk 服务端需要允许站点域名跨域，并在控制台创建同名站�
 - [ ] `site.base` 与部署路径一致
 - [ ] 评论服务的站点名和 CORS 已配置
 - [ ] 404 页面已指向 `dist/404.html`
-- [ ] `npm run build` 成功
+- [ ] `pnpm run build` 成功

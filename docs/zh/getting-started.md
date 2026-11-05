@@ -6,20 +6,20 @@ description: 安装、启动和部署 Redefine for Astro。
 ## 环境要求
 
 - Node.js `>= 22`
-- npm、pnpm 或 yarn 任选其一
+- pnpm 10+
 
 ## 安装
 
 ```bash
 git clone https://github.example.com/you/astro-redefine.git
 cd astro-redefine
-npm install
+pnpm install
 ```
 
 ## 本地开发
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 默认地址为 <http://localhost:4321>。开发服务器支持热更新。
@@ -27,8 +27,8 @@ npm run dev
 ## 构建与预览
 
 ```bash
-npm run build
-npm run preview
+pnpm run build
+pnpm run preview
 ```
 
 构建结果输出到 `dist/`，可以部署到任何静态托管服务。

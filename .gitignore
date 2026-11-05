@@ -28,3 +28,6 @@ pnpm-debug.log*
 
 # generated screenshots
 *.png
+
+# pnpm local store
+.pnpm-store/

@@ -3,7 +3,8 @@
   "type": "module",
   "version": "0.1.0",
   "engines": {
-    "node": ">=22.23.4"
+    "node": ">=22.23.4",
+    "pnpm": ">=10"
   },
   "scripts": {
     "dev": "astro dev",
@@ -28,5 +29,6 @@
     "@astrojs/check": "^0.9.12",
     "typescript": "^6.0.3"
   },
-  "description": "Astro port of Hexo Theme Redefine."
+  "description": "Astro port of Hexo Theme Redefine.",
+  "packageManager": "pnpm@10.27.0"
 }

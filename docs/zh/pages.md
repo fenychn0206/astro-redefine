@@ -61,7 +61,7 @@ comment: true
 node scripts/fetch-friends.mjs
 ```
 
-也可以设置 `package.json` 脚本后再执行 `npm run friends:sync`。
+也可以直接执行 `pnpm run friends:sync`。
 
 ## 说说
 

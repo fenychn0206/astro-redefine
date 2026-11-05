@@ -6,8 +6,8 @@ description: Build output, static hosting, site URL and Artalk CORS.
 ## Build
 
 ```bash
-npm run build
-npm run preview
+pnpm run build
+pnpm run preview
 ```
 
 The output is a static `dist/` directory and can be hosted anywhere that serves static files.
@@ -32,7 +32,7 @@ site: {
 Most platforms can publish `dist/` directly:
 
 ```text
-Build command: npm run build
+Build command: pnpm run build
 Output directory: dist
 Node version: 22+
 ```
@@ -61,4 +61,4 @@ Astro fingerprints assets under `/_astro/`; those can be cached for a long time.
 - [ ] `site.base` matches the deployment path
 - [ ] Comment site name and CORS are configured
 - [ ] 404 points to `dist/404.html`
-- [ ] `npm run build` succeeds
+- [ ] `pnpm run build` succeeds
