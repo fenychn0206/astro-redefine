@@ -1,0 +1,52 @@
+---
+import config from '../../config';
+import { useTranslations } from '../../lib/i18n';
+
+interface Props {
+  comment?: boolean;
+  title?: string;
+}
+const { comment = true, title = '' } = Astro.props;
+const t = useTranslations();
+
+const enabled = config.comment.enable && comment;
+const system = config.comment.system;
+const c = config.comment.config;
+
+const available =
+  enabled &&
+  ((system === 'waline' && Boolean(c.waline.serverUrl)) ||
+    (system === 'giscus' && Boolean(c.giscus.repo && c.giscus.repoId && c.giscus.categoryId)) ||
+    (system === 'twikoo' && Boolean(c.twikoo.serverUrl)) ||
+    (system === 'gitalk' && Boolean(c.gitalk.clientID && c.gitalk.clientSecret && c.gitalk.owner && c.gitalk.repo)) ||
+    (system === 'artalk' && Boolean(c.artalk.server && c.artalk.site)) ||
+    (system === 'utterances' && Boolean(c.utterances.repo)));
+---
+
+{available && (
+  <div class="comments-container mt-10 w-full">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+      {t('comments')}
+    </div>
+    <div
+      class="comment-root"
+      data-comment-system={system}
+      data-page-path={Astro.url.pathname}
+      data-page-title={title}
+    >
+      {system === 'waline' && <div id="waline"></div>}
+      {system === 'giscus' && <div id="giscus-container"></div>}
+      {system === 'twikoo' && <div id="twikoo-comment"></div>}
+      {system === 'gitalk' && <div id="gitalk-container"></div>}
+      {system === 'artalk' && <div id="artalk-comment"></div>}
+      {system === 'utterances' && (
+        <div
+          id="utterances-container"
+          data-utterances-theme-light={c.utterances.themeLight}
+          data-utterances-theme-dark={c.utterances.themeDark}
+        />
+      )}
+    </div>
+  </div>
+)}

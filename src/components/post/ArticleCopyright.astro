@@ -1,0 +1,33 @@
+---
+import config from '../../config';
+import { formatDate } from '../../lib/date';
+import { useTranslations } from '../../lib/i18n';
+import { resolveLicense } from '../../lib/license';
+import type { PostEntry } from '../../lib/posts';
+import { getAuthor, getPostUrl } from '../../lib/posts';
+
+interface Props {
+  post: PostEntry;
+}
+const { post } = Astro.props;
+const t = useTranslations();
+const author = getAuthor(post);
+const license = resolveLicense(post.data.license, post.data.copyright);
+const created = formatDate(post.data.date, `${config.site.dateFormat} ${config.site.timeFormat}`);
+const updated = post.data.updated
+  ? formatDate(post.data.updated, `${config.site.dateFormat} ${config.site.timeFormat}`)
+  : null;
+---
+
+<div class="article-copyright-info-container">
+  <ul>
+    <li><strong>{t('copyright.title')}:</strong> {post.data.title}</li>
+    <li><strong>{t('copyright.author')}:</strong> {author.name}</li>
+    <li><strong>{t('copyright.create_time')}:</strong> {created}</li>
+    {updated && post.data.updated && post.data.updated.getTime() !== post.data.date.getTime() && (
+      <li><strong>{t('copyright.update_time')}:</strong> {updated}</li>
+    )}
+    <li><strong>{t('copyright.link')}:</strong> {getPostUrl(post)}</li>
+    <li><strong>{t('copyright.license_title')}:</strong> <Fragment set:html={license.html} /></li>
+  </ul>
+</div>

@@ -1,0 +1,62 @@
+---
+import config from '../../config';
+import { formatDate } from '../../lib/date';
+import { useTranslations } from '../../lib/i18n';
+import type { PostEntry } from '../../lib/posts';
+import { getPostPath, slugify } from '../../lib/posts';
+import { urlFor } from '../../lib/url';
+
+interface Props {
+  post: PostEntry;
+}
+const { post } = Astro.props;
+const t = useTranslations();
+
+const categories = post.data.categories.slice(0, config.home.categories.limit || undefined);
+const tags = post.data.tags.slice(0, config.home.tags.limit || undefined);
+const dateText = formatDate(post.data.date, config.site.dateFormat);
+---
+
+<div class="home-article-meta-info-container">
+  <div class="home-article-meta-info">
+    <span>
+      <i class="fa-solid fa-calendars" aria-hidden="true"></i>&nbsp;
+      <span class="home-article-date" data-date={post.data.date.toISOString()}>
+        {dateText}
+      </span>
+    </span>
+
+    {categories.length > 0 && config.home.categories.enable && (
+      <span class="home-article-category">
+        <i class="fa-solid fa-folders" aria-hidden="true"></i>&nbsp;
+        <ul>
+          {categories.map((category, index) => (
+            <li>
+              {index > 0 && '| '}
+              <a href={urlFor(`/categories/${slugify(category)}/`)}>{category}</a>&nbsp;
+            </li>
+          ))}
+        </ul>
+      </span>
+    )}
+
+    {tags.length > 0 && config.home.tags.enable && (
+      <span class="home-article-tag">
+        <i class="fa-solid fa-tags" aria-hidden="true"></i>&nbsp;
+        <ul>
+          {tags.map((tag, index) => (
+            <li>
+              {index > 0 && '| '}
+              <a href={urlFor(`/tags/${slugify(tag)}/`)}>{tag}</a>&nbsp;
+            </li>
+          ))}
+        </ul>
+      </span>
+    )}
+  </div>
+
+  <a href={getPostPath(post)}>
+    {t('read_more')}<span class="seo-reader-text">{post.data.title}</span>&nbsp;
+    <i class="fa-solid fa-angle-right" aria-hidden="true"></i>
+  </a>
+</div>

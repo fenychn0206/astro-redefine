@@ -1,0 +1,26 @@
+---
+import { useTranslations } from '../../lib/i18n';
+import { urlFor } from '../../lib/url';
+
+interface Props {
+  postsCount: number;
+  tagsCount: number;
+  categoriesCount: number;
+}
+const { postsCount, tagsCount, categoriesCount } = Astro.props;
+const t = useTranslations();
+---
+<div class="statistics flex justify-around my-2.5">
+  <a class="item tag-count-item flex flex-col justify-center items-center w-20" href={urlFor('/tags/')}>
+    <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">{tagsCount}</div>
+    <div class="label text-third-text-color text-sm">{t('tags')}</div>
+  </a>
+  <a class="item tag-count-item flex flex-col justify-center items-center w-20" href={urlFor('/categories/')}>
+    <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">{categoriesCount}</div>
+    <div class="label text-third-text-color text-sm">{t('categories')}</div>
+  </a>
+  <a class="item tag-count-item flex flex-col justify-center items-center w-20" href={urlFor('/archives/')}>
+    <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">{postsCount}</div>
+    <div class="label text-third-text-color text-sm">{t('posts')}</div>
+  </a>
+</div>

@@ -1,0 +1,30 @@
+---
+import config from '../../config';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HomeContent from '../../components/home/HomeContent.astro';
+import { getAllPosts, paginate } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getAllPosts();
+  const total = Math.max(1, Math.ceil(posts.length / config.site.postsPerPage));
+  return Array.from({ length: Math.max(0, total - 1) }, (_, index) => {
+    const page = index + 2;
+    return { params: { page: String(page) }, props: { page } };
+  });
+}
+
+const { page } = Astro.props;
+const posts = await getAllPosts();
+const { items, current, totalPages } = paginate(posts, page, config.site.postsPerPage);
+---
+
+<BaseLayout
+  isHome
+  showBanner={false}
+  showBackground={config.homeBanner.enable && config.homeBanner.style === 'fixed'}
+  type="website"
+  title={`Page ${page}`}
+  description={config.site.description}
+>
+  <HomeContent posts={items} current={current} total={totalPages} />
+</BaseLayout>

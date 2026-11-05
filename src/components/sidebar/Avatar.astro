@@ -1,0 +1,7 @@
+---
+import config from '../../config';
+import { urlFor } from '../../lib/url';
+---
+<div class="avatar flex justify-center">
+  <img src={urlFor(config.images.avatar)} alt={config.site.author} loading="lazy" />
+</div>

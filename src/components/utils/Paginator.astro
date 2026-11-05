@@ -1,0 +1,51 @@
+---
+import { useTranslations } from '../../lib/i18n';
+import { urlFor } from '../../lib/url';
+
+interface Props {
+  current: number;
+  total: number;
+  basePath?: string;
+}
+const { current, total, basePath = '/' } = Astro.props;
+const t = useTranslations();
+
+function pageUrl(page: number): string {
+  if (page <= 1) return urlFor(basePath);
+  const prefix = basePath.endsWith('/') ? basePath.slice(0, -1) : basePath;
+  return urlFor(`${prefix}/page/${page}/`);
+}
+
+const pages: Array<number | 'ellipsis'> = [];
+for (let page = 1; page <= total; page += 1) {
+  if (page === 1 || page === total || Math.abs(page - current) <= 2) {
+    pages.push(page);
+  } else if (pages.at(-1) !== 'ellipsis') {
+    pages.push('ellipsis');
+  }
+}
+---
+
+{total > 1 && (
+  <div class="paginator">
+    {current > 1 && (
+      <a class="extend prev" rel="prev" href={pageUrl(current - 1)} aria-label={t('prev')}>
+        <i class="fa-regular fa-angle-left" aria-hidden="true"></i>
+      </a>
+    )}
+    {pages.map((page) =>
+      page === 'ellipsis' ? (
+        <span class="space">...</span>
+      ) : page === current ? (
+        <span class="page-number current">{page}</span>
+      ) : (
+        <a class="page-number" href={pageUrl(page)}>{page}</a>
+      ),
+    )}
+    {current < total && (
+      <a class="extend next" rel="next" href={pageUrl(current + 1)} aria-label={t('next')}>
+        <i class="fa-regular fa-angle-right" aria-hidden="true"></i>
+      </a>
+    )}
+  </div>
+)}

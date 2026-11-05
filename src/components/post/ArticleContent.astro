@@ -1,0 +1,188 @@
+---
+import config from '../../config';
+import { useTranslations } from '../../lib/i18n';
+import type { PostEntry } from '../../lib/posts';
+import {
+  getAuthor,
+  getAuthorLabel,
+  getPostImage,
+  getPostPath,
+} from '../../lib/posts';
+import { urlFor } from '../../lib/url';
+import { slugify } from '../../lib/posts';
+import ArticleCopyright from './ArticleCopyright.astro';
+import ArticleInfo from './ArticleInfo.astro';
+import Recommendation from './Recommendation.astro';
+import Toc from './Toc.astro';
+import Comment from '../comments/Comment.astro';
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  post: PostEntry;
+  Content: any;
+  headings: Heading[];
+  prev?: PostEntry | null;
+  next?: PostEntry | null;
+  recommendations?: PostEntry[];
+  postsCount?: number;
+}
+
+const {
+  post,
+  Content,
+  headings,
+  prev = null,
+  next = null,
+  recommendations = [],
+  postsCount = 0,
+} = Astro.props;
+
+const t = useTranslations();
+const cover = getPostImage(post);
+const author = getAuthor(post);
+const label = getAuthorLabel(postsCount);
+
+const tocEnabled =
+  config.articles.toc.enable &&
+  headings.some((heading) => heading.depth <= (config.articles.toc.maxDepth || 3));
+const showToc = tocEnabled && config.articles.toc.initOpen;
+
+const expires = post.data.expires;
+const isExpired = expires ? expires.getTime() < Date.now() : false;
+const daysAgo = post.data.updated
+  ? Math.max(0, Math.floor((Date.now() - post.data.updated.getTime()) / 86400000))
+  : 0;
+
+const titleAlignment = config.articles.style.titleAlignment === 'center' ? 'justify-center' : 'justify-start';
+---
+
+<div class:list={['post-page-container flex relative justify-between box-border w-full h-full', showToc && 'show-toc']}>
+  <div class="article-content-container">
+    <div class="article-title relative w-full">
+      {cover ? (
+        <>
+          <img src={urlFor(cover)} alt={post.data.title} class="w-full h-60 sm:h-72 md:h-80 object-cover rounded-t-large dark:brightness-75" />
+          <div class:list={['w-full flex items-center absolute bottom-0', titleAlignment]}>
+            <h1 class="article-title-cover text-center mx-6 my-6 text-second-text-color bg-background-color-transparent px-4 py-3 text-3xl sm:text-4xl md:text-5xl font-semibold backdrop-blur-lg rounded-xl border border-border-color">
+              {post.data.title}
+            </h1>
+          </div>
+        </>
+      ) : (
+        <div class:list={['w-full flex items-center pt-6', titleAlignment]}>
+          <h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">
+            {post.data.title}
+          </h1>
+        </div>
+      )}
+    </div>
+
+    <div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+      <div class="avatar w-[46px] h-[46px] shrink-0 rounded-medium border border-border-color p-px">
+        <img src={urlFor(author.avatar)} alt={author.name} class="w-full h-full rounded-[12.18px]" />
+      </div>
+      <div class="info flex flex-col justify-between">
+        <div class="author flex items-center">
+          <span class="name text-default-text-color text-lg font-semibold">{author.name}</span>
+          {config.articles.authorLabel.enable && (
+            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">
+              {label}
+            </span>
+          )}
+        </div>
+        <div class="meta-info">
+          <ArticleInfo post={post} />
+        </div>
+      </div>
+    </div>
+
+    {isExpired && (
+      <div
+        class="article-expire mt-4 mx-2 sm:mx-6 md:mx-8 callout callout--simple red mb-4 rounded-small shadow-redefine-flat bg-(--callout-bg-color) p-3 pl-1 relative flex flex-row gap-2 items-center"
+        id="expiration-container"
+        data-expires={expires?.toISOString()}
+        data-updated={post.data.updated?.toISOString()}
+      >
+        <div role="none" class="rounded-full self-stretch w-0.5 bg-(--callout-primary-color) opacity-60 shrink-0"></div>
+        <i class="expire-icon callout__icon fa-solid fa-timer text-(--callout-primary-color) text-base shrink-0" aria-hidden="true"></i>
+        <div class="callout__content markdown-body flex-1 min-w-0">
+          <span class="expire-label text-(--callout-primary-color)" id="expiration-date">
+            {t('expired', daysAgo)}
+          </span>
+        </div>
+      </div>
+    )}
+
+    <div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+      <Content />
+    </div>
+
+    {config.articles.copyright.enable && (
+      <div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+        <ArticleCopyright post={post} />
+      </div>
+    )}
+
+    {post.data.tags.length > 0 && (
+      <ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+        {post.data.tags.map((tag) => (
+          <li class="tag-item mx-0.5">
+            <a href={urlFor(`/tags/${slugify(tag)}/`)}>#{tag}</a>&nbsp;
+          </li>
+        ))}
+      </ul>
+    )}
+
+    {config.articles.recommendation.enable && recommendations.length > 0 && (
+      <Recommendation posts={recommendations} />
+    )}
+
+    {(prev || next) && (
+      <div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+        {prev && (
+          <div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+            <a class="prev" rel="prev" href={getPostPath(prev)}>
+              <span class="left arrow-icon flex justify-center items-center">
+                <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+              </span>
+              <span class="title flex justify-center items-center">
+                <span class="post-nav-title-item truncate max-w-48">{prev.data.title}</span>
+                <span class="post-nav-item">{t('prev_posts')}</span>
+              </span>
+            </a>
+          </div>
+        )}
+        {next && (
+          <div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+            <a class="next" rel="next" href={getPostPath(next)}>
+              <span class="title flex justify-center items-center">
+                <span class="post-nav-title-item truncate max-w-48">{next.data.title}</span>
+                <span class="post-nav-item">{t('next_posts')}</span>
+              </span>
+              <span class="right arrow-icon flex justify-center items-center">
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+              </span>
+            </a>
+          </div>
+        )}
+      </div>
+    )}
+
+    {config.comment.enable && post.data.comment !== false && (
+      <div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+        <Comment title={post.data.title} />
+      </div>
+    )}
+  </div>
+
+  {tocEnabled && (
+    <div class="toc-content-container">
+      <Toc headings={headings} title={post.data.title} />
+    </div>
+  )}
+</div>

@@ -1,0 +1,250 @@
+---
+import { ClientRouter } from 'astro:transitions';
+
+import config from '../../config';
+import { absoluteUrl, urlFor } from '../../lib/url';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  isHome?: boolean;
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  keywords?: string;
+  canonical?: string;
+}
+
+const {
+  title,
+  description = config.site.description,
+  image = config.images.og,
+  type = 'website',
+  noindex = false,
+  isHome = false,
+  publishedTime,
+  modifiedTime,
+  keywords = config.site.keywords,
+  canonical,
+} = Astro.props;
+
+const pageTitle = isHome
+  ? `${config.site.title} - ${config.site.subtitle}`
+  : title
+    ? `${title} | ${config.site.title}`
+    : config.site.title;
+
+const canonicalUrl = canonical
+  ? absoluteUrl(canonical)
+  : new URL(Astro.url.pathname, config.site.url).toString();
+
+const ogImage = image?.startsWith('http') ? image : absoluteUrl(image);
+
+function hexToRgba(hex: string, alpha: number): string {
+  const normalized = hex.replace('#', '');
+  const full =
+    normalized.length === 3
+      ? normalized
+          .split('')
+          .map((c) => c + c)
+          .join('')
+      : normalized;
+  const r = parseInt(full.slice(0, 2), 16) || 0;
+  const g = parseInt(full.slice(2, 4), 16) || 0;
+  const b = parseInt(full.slice(4, 6), 16) || 0;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+const navAlpha = Math.min(1, Math.max(0, config.navbar.color.transparency / 255));
+const navLeft = hexToRgba(config.navbar.color.left, navAlpha);
+const navRight = hexToRgba(config.navbar.color.right, navAlpha);
+
+const headingSizes = Object.entries(config.articles.style.headingsTopSpacing)
+  .map(
+    ([tag, value]) =>
+      `.markdown-body ${tag}:not(.not-markdown) { margin-top: ${value}; }`,
+  )
+  .join('\n');
+
+const themeVars = `
+:root, :root.light, html.light {
+  --primary-color: ${config.colors.primary};
+  --selection-color: color-mix(in srgb, ${config.colors.primary} 82%, white);
+  --home-banner-text-color: ${config.homeBanner.textColor.light};
+  --content-max-width: ${config.global.contentMaxWidth};
+  --sidebar-width: ${config.global.sidebarWidth};
+  --font-geist: 'Geist Variable', 'Noto Sans SC', sans-serif;
+}
+:root.dark, html.dark {
+  --primary-color: ${config.colors.primary};
+  --home-banner-text-color: ${config.homeBanner.textColor.dark};
+  --content-max-width: ${config.global.contentMaxWidth};
+  --sidebar-width: ${config.global.sidebarWidth};
+  --font-geist: 'Geist Variable', 'Noto Sans SC', sans-serif;
+}
+.navbar-container {
+  background: linear-gradient(120deg, ${navLeft} 0%, ${navRight} 100%);
+}
+.navbar-content { max-width: ${config.navbar.width.pages}; }
+.navbar-content.has-home-banner { max-width: ${config.navbar.width.home}; }
+.main-content { max-width: ${config.global.contentMaxWidth}; }
+.main-content.has-toc { max-width: calc(${config.global.contentMaxWidth} * 1.2) !important; }
+.home-sidebar-container { width: ${config.global.sidebarWidth}; }
+.post-page-container .toc-content-container { width: ${config.global.sidebarWidth}; }
+.post-page-container.show-toc .article-content-container { width: calc(100% - ${config.global.sidebarWidth}) !important; }
+.markdown-body { font-size: ${config.articles.style.fontSize}; line-height: ${config.articles.style.lineHeight}; }
+.markdown-body img:not(.not-markdown) {
+  border-radius: ${config.articles.style.imageBorderRadius};
+  margin-left: ${config.articles.style.imageAlignment === 'center' ? 'auto' : '0'};
+  margin-right: ${config.articles.style.imageAlignment === 'center' ? 'auto' : '0'};
+}
+.home-banner-container .description { color: var(--home-banner-text-color); font-size: ${config.homeBanner.textStyle.titleSize}; line-height: ${config.homeBanner.textStyle.lineHeight}; }
+.home-banner-container .description p i, .home-banner-container .description p span { font-size: ${config.homeBanner.textStyle.subtitleSize}; }
+.home-banner-container .content { min-height: 90vh; }
+${headingSizes}
+${config.global.fonts.chinese.enable && config.global.fonts.chinese.family ? `html, body { font-family: '${config.global.fonts.chinese.family}', var(--font-geist), sans-serif; }` : ''}
+${config.global.fonts.english.enable && config.global.fonts.english.family ? `html, body { font-family: '${config.global.fonts.english.family}', var(--font-geist), sans-serif; }` : ''}
+${config.global.fonts.title.enable && config.global.fonts.title.family ? `.navbar-container, .home-sidebar-container .site-name, .home-banner-container { font-family: '${config.global.fonts.title.family}', 'Chillax-Variable', sans-serif; }` : ''}
+${config.articles.codeBlock.font.enable && config.articles.codeBlock.font.family ? `pre, code { font-family: '${config.articles.codeBlock.font.family}', 'Geist Mono', monospace !important; }` : ''}
+@media (max-width: 768px) {
+  .home-banner-container .description { font-size: calc(${config.homeBanner.textStyle.titleSize} * 0.9); }
+}
+`;
+
+const themeScript = `
+(function () {
+  var THEME_KEY = 'REDEFINE-THEME-STATUS';
+  var DARK = 'dark';
+  var LIGHT = 'light';
+  var DEFAULT_MODE = '${config.colors.defaultMode}';
+  function getTheme() {
+    try {
+      var saved = localStorage.getItem(THEME_KEY);
+      if (saved) {
+        var parsed = JSON.parse(saved);
+        if (parsed && typeof parsed.isDark === 'boolean') {
+          return parsed.isDark ? DARK : LIGHT;
+        }
+      }
+    } catch (e) {}
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return DARK;
+    }
+    return DEFAULT_MODE;
+  }
+  function applyTheme(theme) {
+    var isDark = theme === DARK;
+    var root = document.documentElement;
+    root.classList.add(theme);
+    root.classList.remove(isDark ? LIGHT : DARK);
+    root.style.colorScheme = theme;
+    var body = document.body;
+    if (body) {
+      body.classList.add(theme + '-mode');
+      body.classList.remove((isDark ? LIGHT : DARK) + '-mode');
+    }
+  }
+  var initial = getTheme();
+  applyTheme(initial);
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (event) {
+    if (!localStorage.getItem(THEME_KEY)) {
+      applyTheme(event.matches ? DARK : LIGHT);
+    }
+  });
+  document.addEventListener('DOMContentLoaded', function () { applyTheme(document.documentElement.classList.contains(DARK) ? DARK : LIGHT); });
+})();
+`;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+<meta name="keywords" content={keywords} />
+<meta name="author" content={config.site.author} />
+<meta name="theme-color" content={config.colors.primary} />
+<meta name="robots" content={noindex ? 'noindex,nofollow' : config.seo.robots} />
+
+<title>{pageTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalUrl} />
+
+<meta property="og:type" content={type} />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:site_name" content={config.site.title} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:locale" content={config.site.language.replace('-', '_')} />
+{type === 'article' && publishedTime && (
+  <meta property="article:published_time" content={publishedTime.toISOString()} />
+)}
+{type === 'article' && modifiedTime && (
+  <meta property="article:modified_time" content={modifiedTime.toISOString()} />
+)}
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={pageTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<link rel="icon" type="image/svg+xml" href={urlFor(config.images.favicon)} />
+<link rel="apple-touch-icon" href={urlFor(config.images.favicon)} />
+
+<script is:inline set:html={themeScript}></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+<link rel="stylesheet" href={urlFor('/fonts/Chillax/chillax.css')} />
+<link rel="stylesheet" href={urlFor('/fonts/Geist/geist.css')} />
+<link rel="stylesheet" href={urlFor('/fonts/GeistMono/geist-mono.css')} />
+
+<link rel="stylesheet" href={urlFor('/fontawesome/fontawesome.min.css')} />
+<link rel="stylesheet" href={urlFor('/fontawesome/brands.min.css')} />
+<link rel="stylesheet" href={urlFor('/fontawesome/solid.min.css')} />
+<link rel="stylesheet" href={urlFor('/fontawesome/regular.min.css')} />
+{config.fontawesome.light && <link rel="stylesheet" href={urlFor('/fontawesome/light.min.css')} />}
+{config.fontawesome.thin && <link rel="stylesheet" href={urlFor('/fontawesome/thin.min.css')} />}
+{config.fontawesome.duotone && <link rel="stylesheet" href={urlFor('/fontawesome/duotone.min.css')} />}
+{config.fontawesome.sharpSolid && <link rel="stylesheet" href={urlFor('/fontawesome/sharp-solid.min.css')} />}
+
+{config.homeBanner.customFont.enable && config.homeBanner.customFont.url && (
+  <link rel="stylesheet" href={config.homeBanner.customFont.url} />
+)}
+{config.global.fonts.chinese.enable && config.global.fonts.chinese.url && (
+  <link rel="stylesheet" href={config.global.fonts.chinese.url} />
+)}
+{config.global.fonts.english.enable && config.global.fonts.english.url && (
+  <link rel="stylesheet" href={config.global.fonts.english.url} />
+)}
+{config.global.fonts.title.enable && config.global.fonts.title.url && (
+  <link rel="stylesheet" href={config.global.fonts.title.url} />
+)}
+{config.articles.codeBlock.font.enable && config.articles.codeBlock.font.url && (
+  <link rel="stylesheet" href={config.articles.codeBlock.font.url} />
+)}
+
+<style is:global set:html={themeVars}></style>
+
+{config.global.googleAnalytics.enable && config.global.googleAnalytics.id && (
+  <>
+    <script
+      is:inline
+      async
+      src={`https://www.googletagmanager.com/gtag/js?id=${config.global.googleAnalytics.id}`}
+    ></script>
+    <script is:inline define:vars={{ gaId: config.global.googleAnalytics.id }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', gaId);
+    </script>
+  </>
+)}
+
+{config.inject.enable && config.inject.head.filter(Boolean).map((html) => (
+  <Fragment set:html={html} />
+))}
+
+{config.global.singlePage && <ClientRouter />}

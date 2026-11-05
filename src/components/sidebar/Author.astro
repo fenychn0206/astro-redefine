@@ -1,0 +1,14 @@
+---
+import config from '../../config';
+import { getAuthorLabel } from '../../lib/posts';
+interface Props {
+  postCount?: number;
+}
+const { postCount = 0 } = Astro.props;
+---
+<div class="author flex flex-col justify-center my-2.5 mx-0">
+  <div class="name">{config.site.author}</div>
+  {config.articles.authorLabel.enable && (
+    <div class="label">{getAuthorLabel(postCount)}</div>
+  )}
+</div>

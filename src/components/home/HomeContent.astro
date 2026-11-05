@@ -1,0 +1,64 @@
+---
+import { useTranslations } from '../../lib/i18n';
+import type { PostEntry } from '../../lib/posts';
+import { getExcerpt, getPostImage, getPostPath } from '../../lib/posts';
+import { urlFor } from '../../lib/url';
+import HomeArticle from './HomeArticle.astro';
+import Paginator from '../utils/Paginator.astro';
+
+interface Props {
+  posts: PostEntry[];
+  current: number;
+  total: number;
+}
+const { posts, current, total } = Astro.props;
+const t = useTranslations();
+---
+
+<div class="home-content-container">
+  <ul class="home-article-list">
+    {posts.map((post) => {
+      const thumbnail = getPostImage(post);
+      const excerpt = getExcerpt(post);
+      const sticky = Boolean(post.data.sticky);
+      return (
+        <li class="home-article-item">
+          {sticky && (
+            <div class="home-article-sticky-label absolute top-[12px] right-[12px] text-[0.7rem] text-third-text-color rounded-medium bg-background-color-transparent-15 backdrop-blur-sm py-[2px] px-[10px] border border-border-color z-3 hover:text-first-text-color cursor-default">
+              <i class="fa-regular fa-thumbtack mr-[3px] text-[0.65rem]" aria-hidden="true"></i>
+              {t('sticky')}
+            </div>
+          )}
+
+          {thumbnail && (
+            <div id="home-article-thumbnail" class="home-article-thumbnail relative h-[150px] overflow-hidden rounded-t-large">
+              <a href={getPostPath(post)} aria-label={post.data.title}>
+                <img src={urlFor(thumbnail)} alt={post.data.title} loading="lazy" class="w-full h-full object-cover dark:brightness-75 transition-all" />
+              </a>
+            </div>
+          )}
+
+          <div class:list={['flex flex-col gap-5 px-7 pb-7', thumbnail ? 'pt-5' : 'pt-7']}>
+            <h3 class="home-article-title">
+              <a href={getPostPath(post)}>{post.data.title}</a>
+            </h3>
+
+            <div class="home-article-content markdown-body">
+              {excerpt ? (
+                <p>{excerpt}</p>
+              ) : (
+                <p>{post.data.description ?? ''}</p>
+              )}
+            </div>
+
+            <HomeArticle post={post} />
+          </div>
+        </li>
+      );
+    })}
+  </ul>
+
+  <div class="home-paginator px-7 py-5">
+    <Paginator current={current} total={total} />
+  </div>
+</div>

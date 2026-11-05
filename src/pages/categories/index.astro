@@ -1,0 +1,15 @@
+---
+import config from '../../config';
+import { useTranslations } from '../../lib/i18n';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CategoriesIndex from '../../components/pages/CategoriesIndex.astro';
+import { getAllPosts, getPostTaxonomies } from '../../lib/posts';
+
+const t = useTranslations();
+const posts = await getAllPosts();
+const { categories } = getPostTaxonomies(posts);
+---
+
+<BaseLayout title={t('categories')} description={`${t('categories')} - ${config.site.title}`}>
+  <CategoriesIndex categories={categories} title={t('categories')} />
+</BaseLayout>

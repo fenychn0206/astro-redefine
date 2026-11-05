@@ -1,0 +1,71 @@
+---
+import { render } from 'astro:content';
+import config from '../../../../config';
+import { datePath } from '../../../../lib/date';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import ArticleContent from '../../../../components/post/ArticleContent.astro';
+import {
+  getAllPosts,
+  getAdjacentPosts,
+  getExcerpt,
+  getPostImage,
+  getPostPath,
+  getPostSlug,
+  getRecommendations,
+} from '../../../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getAllPosts();
+  return posts.map((post) => {
+    const { year, month, day } = datePath(post.data.date);
+    return {
+      params: { year, month, day, slug: getPostSlug(post) },
+      props: { postId: post.id, path: getPostPath(post) },
+    };
+  });
+}
+
+const { postId } = Astro.props;
+const posts = await getAllPosts();
+const post = posts.find((entry) => entry.id === postId);
+if (!post) throw new Error(`Post not found: ${postId}`);
+
+const { Content, headings } = await render(post as any);
+const { prev, next } = getAdjacentPosts(posts, post);
+const recommendations = config.articles.recommendation.enable
+  ? getRecommendations(posts, post)
+  : [];
+
+const tocEnabled =
+  config.articles.toc.enable &&
+  headings.some((heading) => heading.depth <= (config.articles.toc.maxDepth || 3));
+const tocOpen = tocEnabled && config.articles.toc.initOpen;
+const image = getPostImage(post) || config.images.og;
+const description = post.data.description || getExcerpt(post, 160);
+const hasMermaid = /```mermaid\b/.test(post.body ?? '');
+---
+
+<BaseLayout
+  type="article"
+  isPost
+  title={post.data.title}
+  description={description}
+  image={image}
+  keywords={post.data.keywords}
+  publishedTime={post.data.date}
+  modifiedTime={post.data.updated}
+  hasToc={tocEnabled}
+  tocOpen={tocOpen}
+  comment={post.data.comment !== false}
+  hasMermaid={hasMermaid}
+>
+  <ArticleContent
+    post={post}
+    Content={Content}
+    headings={headings}
+    prev={prev}
+    next={next}
+    recommendations={recommendations}
+    postsCount={posts.length}
+  />
+</BaseLayout>

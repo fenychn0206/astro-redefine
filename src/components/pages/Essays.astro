@@ -1,0 +1,40 @@
+---
+import { marked } from 'marked';
+import config from '../../config';
+import { essays } from '../../lib/data';
+import { formatDate } from '../../lib/date';
+import { urlFor } from '../../lib/url';
+
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+
+marked.setOptions({ gfm: true, breaks: true });
+const sorted = [...essays].sort(
+  (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+);
+---
+
+<div class="mb-4">
+  <h1 class="page-title-header">{title}</h1>
+  <ul class="flex flex-col mb-4 gap-6">
+    {sorted.map((essay) => (
+      <li class="w-full flex flex-row relative">
+        <div class="w-10 h-10 mr-4 rounded-lg overflow-hidden border border-border-color p-[1px] shrink-0">
+          <img src={urlFor(config.images.avatar)} alt={config.site.author} class="w-full h-full rounded-[6.2px]" loading="lazy" />
+        </div>
+        <div class="w-full border-border-color rounded-xl rounded-tl-none shadow-redefine-flat overflow-hidden">
+          <div
+            class="essay-date px-4 py-1.5 text-sm border-b border-border-color bg-zinc-50 dark:bg-zinc-800 text-third-text-color"
+            data-date={new Date(essay.date).toISOString()}
+          >
+            {formatDate(essay.date, 'YYYY-MM-DD HH:mm')}
+          </div>
+          <div id="shuoshuo-content" class="px-4 py-2" set:html={marked.parse(essay.content)} />
+        </div>
+        <div class="absolute left-[50.5px] top-3 transform w-2 h-2 border-solid border-t border-l bg-zinc-50 -rotate-45 border-border-color dark:bg-zinc-800"></div>
+      </li>
+    ))}
+  </ul>
+</div>

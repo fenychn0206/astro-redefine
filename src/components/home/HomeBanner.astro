@@ -1,0 +1,140 @@
+---
+import config from '../../config';
+import { urlFor } from '../../lib/url';
+
+const banner = config.homeBanner;
+const hasSubtitle =
+  banner.subtitle.text.length > 0 || banner.subtitle.hitokoto.enable;
+
+const style = banner.socialLinks.style;
+const flexDirection = style === 'reverse' ? 'flex-row-reverse' : 'flex-row';
+const justify = style === 'center' ? 'justify-center' : 'justify-between';
+const display = style === 'center' ? 'hidden' : 'flex';
+
+function normalizeIcon(iconValue: string | undefined, fallbackName = ''): string {
+  const source = iconValue || fallbackName || '';
+  if (!source) return '';
+  if (source === 'email') return 'fa-solid fa-at';
+  if (source.startsWith('/') || source.startsWith('http')) return source;
+  if (source.includes('fa-')) return source;
+  return `fa-brands fa-${source}`;
+}
+
+const qrs = banner.socialLinks.qrs.filter((item) => item && item.qr);
+---
+
+{banner.style === 'fixed' && (
+  <style>
+    .home-banner-container {
+      background: none !important;
+    }
+    .home-article-item,
+    .sidebar-links,
+    .sidebar-content,
+    a.page-number,
+    a.extend,
+    .sidebar-links .links:hover,
+    .right-bottom-tools,
+    footer.footer {
+      background-color: var(--background-color-transparent-80) !important;
+    }
+    .right-bottom-tools:hover,
+    a.page-number:hover,
+    a.extend:hover {
+      background-color: var(--primary-color) !important;
+    }
+    .site-info,
+    .home-article-sticky-label {
+      background-color: var(--background-color-transparent-15) !important;
+    }
+    .home-article-sticky-label {
+      backdrop-filter: none !important;
+    }
+  </style>
+  <div class="home-banner-background transition-fade fixed top-0 left-0 w-screen h-screen scale-125 sm:scale-110 box-border will-change-transform bg-cover">
+    <img src={urlFor(banner.image.light)} alt="home-banner-background" class="w-full h-full object-cover dark:hidden" />
+    <img src={urlFor(banner.image.dark)} alt="home-banner-background" class="w-full h-full object-cover hidden dark:block" />
+  </div>
+)}
+
+<div class="home-banner-container flex justify-center items-center transition-fade relative">
+  {banner.style !== 'fixed' && (
+    <div class="home-banner-background transition-fade absolute top-0 left-0 w-screen h-screen scale-125 sm:scale-110 box-border will-change-transform bg-cover">
+      <img src={urlFor(banner.image.light)} alt="home-banner-background" class="w-full h-full object-cover dark:hidden" />
+      <img src={urlFor(banner.image.dark)} alt="home-banner-background" class="w-full h-full object-cover hidden dark:block" />
+    </div>
+  )}
+
+  <div class="content mt-8 flex flex-col justify-center items-center transition-fade-down">
+    <div
+      class="description flex flex-col justify-center items-center w-screen font-medium text-center"
+      style={banner.customFont.enable && banner.customFont.family ? `font-family: '${banner.customFont.family}', sans-serif;` : undefined}
+    >
+      <Fragment set:html={banner.title} />
+      {hasSubtitle && (
+        <p><i id="subtitle"></i></p>
+      )}
+    </div>
+
+    {banner.socialLinks.enable && (
+      <div class:list={['absolute bottom-0.5 flex max-w-[1340px] items-center w-full px-8 sm:px-12', flexDirection, justify]}>
+        <div
+          class:list={[
+            display,
+            'p-3 bg-gray-300/50 dark:bg-gray-500/40 backdrop-blur-lg border border-white/20 dark:border-gray-500/30 group rounded-full cursor-pointer justify-center items-center aspect-square h-full shadow-redefine-flat hover:shadow-redefine-flat-hover transition-shadow',
+          ]}
+          onclick="scrollToMain()"
+          role="button"
+          tabindex="0"
+          aria-label="Scroll to content"
+        >
+          <i class="fa-solid fa-arrow-down fa-fw fa-lg group-hover:translate-y-1 transition-transform" aria-hidden="true"></i>
+        </div>
+
+        <div class="social-contacts px-6 py-3 bg-gray-300/50 dark:bg-gray-500/40 backdrop-blur-lg border border-white/20 dark:border-gray-500/30 shadow-redefine-flat rounded-full flex flex-row gap-3 items-center">
+          {banner.socialLinks.links.filter((item) => item && item.url).map((item) => {
+            const name = item.name || '';
+            const icon = normalizeIcon(item.icon, name);
+            const isEmail = name === 'email' || icon.includes('fa-at') || String(item.url).startsWith('mailto:');
+            const resolvedUrl = isEmail && !String(item.url).startsWith('mailto:') ? `mailto:${item.url}` : String(item.url);
+            return (
+              <span class:list={['social-contact-item', name]}>
+                <a href={resolvedUrl} target={isEmail ? undefined : '_blank'} rel={isEmail ? undefined : 'noopener noreferrer'} aria-label={name || icon}>
+                  {icon.startsWith('/') || icon.startsWith('http') ? (
+                    <img src={urlFor(icon)} alt={name || 'social icon'} class="w-5 h-5 object-contain" />
+                  ) : (
+                    <i class:list={[icon, 'fa-fw', 'fa-lg']} aria-hidden="true" />
+                  )}
+                </a>
+              </span>
+            );
+          })}
+
+          {qrs.length > 0 && (
+            <>
+              <div class="social-links-divider vertical-separator w-[1px] h-4 bg-third-text-color mx-0.5"></div>
+              {qrs.map((item) => {
+                const name = item.name || '';
+                const icon = normalizeIcon(item.icon, name);
+                return (
+                  <span class:list={['social-contact-item-qr cursor-pointer group qr-toggle-item', name]}>
+                    <a target="_blank" rel="noopener noreferrer" aria-label={name || 'QR code'}>
+                      {icon.startsWith('/') || icon.startsWith('http') ? (
+                        <img src={urlFor(icon)} alt={name || 'social icon'} class="w-5 h-5 object-contain qr-trigger" />
+                      ) : (
+                        <i class:list={[icon, 'fa-fw', 'fa-lg', 'qr-trigger']} aria-hidden="true" />
+                      )}
+                      <div class="social-qr-container absolute h-auto bg-background-color-transparent-40 border border-white/20 dark:border-gray-500/30 overflow-hidden rounded-2xl bottom-0 mb-14 right-0 invisible group-hover:visible group-active:visible opacity-0 group-hover:opacity-100 group-active:opacity-100 translate-y-0.5 group-hover:translate-y-0 group-active:translate-y-0 transition-all qr-popup">
+                        <img class="social-contacts-qr w-64" src={urlFor(item.qr)} alt={`${name} QR code`} />
+                      </div>
+                    </a>
+                  </span>
+                );
+              })}
+            </>
+          )}
+        </div>
+      </div>
+    )}
+  </div>
+</div>

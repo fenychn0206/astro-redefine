@@ -1,0 +1,33 @@
+---
+import { formatDate } from '../../lib/date';
+import type { PostEntry } from '../../lib/posts';
+import { getArchiveGroups, getPostPath } from '../../lib/posts';
+
+interface Props {
+  posts: PostEntry[];
+}
+const { posts } = Astro.props;
+const groups = getArchiveGroups(posts);
+---
+
+<div class="archive-list-container">
+  {groups.map((group) => (
+    <section class="archive-item mb-spacing-unit last:mb-0">
+      <div class="archive-item-header flex flex-row items-center mb-2">
+        <span class="archive-year font-semibold text-3xl mr-2">{group.year}</span>
+        <span class="archive-year-post-count text-xs md:text-sm font-bold rounded-small bg-third-background-color py-[2px] px-[10px] border border-border-color">
+          {group.posts.length}
+        </span>
+      </div>
+      <ul class="article-list pl-0 md:pl-8 text-lg leading-[1.5]">
+        {group.posts.map((post) => (
+          <li class="article-item space-y-2 px-6 pt-10 pb-2 text-xl relative border-l-2 border-border-color" date-is={formatDate(post.data.date, 'MM-DD')}>
+            <a href={getPostPath(post)} class="block w-fit">
+              <span class="article-title my-0.5 text-2xl">{post.data.title}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+</div>

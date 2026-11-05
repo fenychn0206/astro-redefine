@@ -1,0 +1,61 @@
+---
+import { getCollection, render } from 'astro:content';
+import config from '../config';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageTemplate from '../components/pages/PageTemplate.astro';
+import Friends from '../components/pages/Friends.astro';
+import Essays from '../components/pages/Essays.astro';
+import Masonry from '../components/pages/Masonry.astro';
+import Bookmarks from '../components/pages/Bookmarks.astro';
+import Comment from '../components/comments/Comment.astro';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('pages');
+  return pages.map((page) => ({
+    params: { slug: page.id.replace(/\.md$/, '') },
+    props: { pageId: page.id },
+  }));
+}
+
+const { pageId } = Astro.props;
+const pages = await getCollection('pages');
+const page = pages.find((entry) => entry.id === pageId);
+if (!page) throw new Error(`Page not found: ${pageId}`);
+
+const { Content } = await render(page);
+const type = String(page.data.type || page.data.template || '').toLowerCase();
+const slug = page.id.replace(/\.md$/, '');
+const isRaw = ['masonry', 'bookmarks'].includes(type) || ['masonry', 'bookmarks'].includes(slug);
+const description = page.data.description || config.site.description;
+---
+
+<BaseLayout title={page.data.title} description={description} keywords={page.data.keywords}>
+  {isRaw ? (
+    <>
+      {type === 'masonry' || slug === 'masonry' ? <Masonry title={page.data.title} /> : <Bookmarks title={page.data.title} />}
+      <div class="page-template-content markdown-body"><Content /></div>
+    </>
+  ) : (
+    <div class:list={['page-template-container', (type === 'links' || slug === 'showcase' || slug === 'links') && 'friends-page']}>
+      {type === 'links' || type === 'link' || slug === 'showcase' || slug === 'links' ? (
+        <Friends title={page.data.title} />
+      ) : type === 'essays' || type === 'essay' || type === 'shuoshuo' || slug === 'essays' ? (
+        <Essays title={page.data.title} />
+      ) : (
+        <PageTemplate title={page.data.title}>
+          <Content />
+        </PageTemplate>
+      )}
+
+      {(type === 'links' || slug === 'showcase' || slug === 'links') && (
+        <div class="page-template-content markdown-body"><Content /></div>
+      )}
+
+      {page.data.comment && (
+        <div class="page-template-comments">
+          <Comment comment title={page.data.title} />
+        </div>
+      )}
+    </div>
+  )}
+</BaseLayout>

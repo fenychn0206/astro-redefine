@@ -1,0 +1,85 @@
+---
+import config from '../../config';
+import { formatPostDate } from '../../lib/date';
+import { useTranslations } from '../../lib/i18n';
+import type { PostEntry } from '../../lib/posts';
+import { getWordCount, getReadingTime, slugify } from '../../lib/posts';
+import { urlFor } from '../../lib/url';
+
+interface Props {
+  post: PostEntry;
+}
+const { post } = Astro.props;
+const t = useTranslations();
+const words = getWordCount(post.body ?? '');
+const minutes = getReadingTime(words);
+const created = formatPostDate(post.data.date);
+const updated = post.data.updated ? formatPostDate(post.data.updated) : null;
+---
+
+<div class="article-meta-info">
+  <span class="article-date article-meta-item" title={t('create_time')}>
+    <i class="fa-regular fa-pen-fancy" aria-hidden="true"></i>&nbsp;
+    <span class="desktop">{created}</span>
+    <span class="mobile">{created}</span>
+    <span class="hover-info">{t('create_time')}</span>
+  </span>
+
+  {updated && post.data.updated && post.data.updated.getTime() !== post.data.date.getTime() && (
+    <span class="article-date article-meta-item" title={t('update_time')}>
+      <i class="fa-regular fa-wrench" aria-hidden="true"></i>&nbsp;
+      <span class="desktop">{updated}</span>
+      <span class="mobile">{updated}</span>
+      <span class="hover-info">{t('update_time')}</span>
+    </span>
+  )}
+
+  {post.data.categories.length > 0 && (
+    <span class="article-categories article-meta-item">
+      <i class="fa-regular fa-folders" aria-hidden="true"></i>&nbsp;
+      <ul>
+        {post.data.categories.map((category, index) => (
+          <li>
+            {index > 0 && '| '}
+            <a href={urlFor(`/categories/${slugify(category)}/`)}>{category}</a>&nbsp;
+          </li>
+        ))}
+      </ul>
+    </span>
+  )}
+
+  {post.data.tags.length > 0 && (
+    <span class="article-tags article-meta-item">
+      <i class="fa-regular fa-tags" aria-hidden="true"></i>&nbsp;
+      <ul>
+        {post.data.tags.map((tag, index) => (
+          <li>
+            {index > 0 && '| '}
+            <a href={urlFor(`/tags/${slugify(tag)}/`)}>{tag}</a>&nbsp;
+          </li>
+        ))}
+      </ul>
+    </span>
+  )}
+
+  {config.articles.wordCount.enable && config.articles.wordCount.count && (
+    <span class="article-wordcount article-meta-item">
+      <i class="fa-regular fa-typewriter" aria-hidden="true"></i>&nbsp;
+      <span>{words} {t('wordcount')}</span>
+    </span>
+  )}
+
+  {config.articles.wordCount.enable && config.articles.wordCount.min2read && (
+    <span class="article-min2read article-meta-item">
+      <i class="fa-regular fa-clock" aria-hidden="true"></i>&nbsp;
+      <span>{minutes} {t('min2read')}</span>
+    </span>
+  )}
+
+  {config.global.websiteCounter.enable && config.global.websiteCounter.postPv && (
+    <span class="article-pv article-meta-item">
+      <i class="fa-regular fa-eye" aria-hidden="true"></i>&nbsp;
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  )}
+</div>

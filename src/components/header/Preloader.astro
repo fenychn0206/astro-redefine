@@ -1,0 +1,108 @@
+---
+import config from '../../config';
+---
+<style>
+  :root {
+    --preloader-background-color: #fff;
+    --preloader-text-color: #000;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --preloader-background-color: #202124;
+      --preloader-text-color: #fff;
+    }
+  }
+  @media (max-width: 600px) {
+    .ml13 {
+      font-size: 2.6rem !important;
+    }
+  }
+  .preloader {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    padding: 12px;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--preloader-background-color);
+    z-index: 1100;
+    transition: opacity 0.2s ease-in-out;
+  }
+  .ml13 {
+    font-size: 3.2rem;
+    color: var(--preloader-text-color);
+    letter-spacing: -1px;
+    font-weight: 500;
+    font-family: 'Chillax-Variable', sans-serif;
+    text-align: center;
+  }
+  .ml13 .word {
+    display: inline-flex;
+    flex-wrap: wrap;
+    white-space: nowrap;
+  }
+  .ml13 .letter {
+    display: inline-block;
+    line-height: 1em;
+  }
+</style>
+
+<div class="preloader" data-preloader>
+  <h2 class="ml13">{config.global.preloader.customMessage || config.site.title}</h2>
+</div>
+
+<script is:inline>
+  (function () {
+    const preloader = document.querySelector('[data-preloader]');
+    if (!preloader) return;
+    const text = preloader.querySelector('.ml13');
+    if (text && window.anime) {
+      const words = text.textContent.trim().split(' ');
+      text.innerHTML = '';
+      words.forEach(function (word) {
+        const wordSpan = document.createElement('span');
+        wordSpan.className = 'word';
+        wordSpan.innerHTML = word.replace(/\S/g, "<span class='letter'>$&</span>");
+        text.appendChild(wordSpan);
+        text.appendChild(document.createTextNode(' '));
+      });
+      anime
+        .timeline({ loop: false })
+        .add({
+          targets: '.ml13 .letter',
+          translateY: [20, 0],
+          opacity: [0, 1],
+          filter: ['blur(5px)', 'blur(0px)'],
+          easing: 'easeOutExpo',
+          duration: 1200,
+          delay: (el, i) => 300 + 20 * i,
+        })
+        .add({
+          targets: '.ml13 .letter',
+          translateY: [0, -20],
+          opacity: [1, 0],
+          filter: ['blur(0px)', 'blur(5px)'],
+          easing: 'easeInExpo',
+          duration: 1000,
+          delay: (el, i) => 15 * i,
+          complete: function () {
+            hidePreloader();
+          },
+        }, '-=700');
+    }
+    window.addEventListener('load', function () {
+      setTimeout(hidePreloader, 5000);
+    });
+    function hidePreloader() {
+      if (!preloader) return;
+      preloader.style.opacity = '0';
+      setTimeout(function () {
+        preloader.style.display = 'none';
+      }, 200);
+    }
+  })();
+</script>

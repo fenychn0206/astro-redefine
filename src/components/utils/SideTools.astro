@@ -1,0 +1,44 @@
+---
+import config from '../../config';
+import { urlFor } from '../../lib/url';
+---
+<div class="side-tools-container">
+  <ul class="hidden-tools-list">
+    <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center" title="Increase font size">
+      <i class="fa-regular fa-magnifying-glass-plus" aria-hidden="true"></i>
+    </li>
+    <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center" title="Decrease font size">
+      <i class="fa-regular fa-magnifying-glass-minus" aria-hidden="true"></i>
+    </li>
+    <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center" title="Toggle dark mode">
+      <i class="fa-regular fa-moon" aria-hidden="true"></i>
+    </li>
+    {config.plugins.feed.enable && (
+      <li class="right-bottom-tools rss flex justify-center items-center">
+        <a class="flex justify-center items-center" href={urlFor('/rss.xml')} target="_blank" rel="noopener" aria-label="RSS">
+          <i class="fa-regular fa-rss" aria-hidden="true"></i>
+        </a>
+      </li>
+    )}
+    {!config.global.scrollProgress.percentage && (
+      <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+        <i class="fa-regular fa-arrow-up" aria-hidden="true"></i>
+      </li>
+    )}
+    <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+      <i class="fa-regular fa-arrow-down" aria-hidden="true"></i>
+    </li>
+  </ul>
+
+  <ul class="visible-tools-list">
+    <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+      <i class="fa-regular fa-cog fa-spin" aria-hidden="true"></i>
+    </li>
+    {config.global.scrollProgress.percentage && (
+      <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+        <i class="arrow-up fas fa-arrow-up" aria-hidden="true"></i>
+        <span class="percent">0</span>
+      </li>
+    )}
+  </ul>
+</div>

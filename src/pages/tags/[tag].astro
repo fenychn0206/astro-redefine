@@ -1,0 +1,29 @@
+---
+import { useTranslations } from '../../lib/i18n';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostsList from '../../components/archive/PostsList.astro';
+import { getAllPosts, getPostTaxonomies } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getAllPosts();
+  const { tags } = getPostTaxonomies(posts);
+  return tags.map((tag) => ({
+    params: { tag: tag.slug },
+    props: { tag: tag.name, posts: posts.filter((post) => post.data.tags.includes(tag.name)) },
+  }));
+}
+
+const { tag, posts } = Astro.props;
+const t = useTranslations();
+---
+
+<BaseLayout title={`${t('tag')}: ${tag}`} description={`${t('tag')} ${tag}`}>
+  <div class="tag-container shadow-none hover:shadow-none sm:shadow-redefine sm:hover:shadow-redefine-hover">
+    <div class="tag-name">
+      <i class="fa-solid fa-tag" aria-hidden="true"></i>&nbsp;{tag}
+    </div>
+    <div class="tag-post-list">
+      <PostsList posts={posts} />
+    </div>
+  </div>
+</BaseLayout>

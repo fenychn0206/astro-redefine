@@ -1,11 +1,19 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import config from '../config';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HomeContent from '../components/home/HomeContent.astro';
+import { getAllPosts, paginate } from '../lib/posts';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const posts = await getAllPosts();
+const { items, current, totalPages } = paginate(posts, 1, config.site.postsPerPage);
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<BaseLayout
+  isHome
+  showBanner={config.homeBanner.enable}
+  type="website"
+  title={undefined}
+  description={config.site.description}
+>
+  <HomeContent posts={items} current={current} total={totalPages} />
+</BaseLayout>

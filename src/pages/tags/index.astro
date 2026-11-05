@@ -1,0 +1,15 @@
+---
+import config from '../../config';
+import { useTranslations } from '../../lib/i18n';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TagsIndex from '../../components/pages/TagsIndex.astro';
+import { getAllPosts, getPostTaxonomies } from '../../lib/posts';
+
+const t = useTranslations();
+const posts = await getAllPosts();
+const { tags } = getPostTaxonomies(posts);
+---
+
+<BaseLayout title={t('tags')} description={`${t('tagcloud')} - ${config.site.title}`}>
+  <TagsIndex tags={tags} title={t('tags')} />
+</BaseLayout>

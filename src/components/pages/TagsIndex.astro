@@ -1,0 +1,51 @@
+---
+import config from '../../config';
+import { useTranslations } from '../../lib/i18n';
+import { urlFor } from '../../lib/url';
+
+interface TagItem {
+  name: string;
+  count: number;
+  slug: string;
+}
+interface Props {
+  tags: TagItem[];
+  title?: string;
+}
+const { tags, title } = Astro.props;
+const t = useTranslations();
+const maxCount = Math.max(...tags.map((tag) => tag.count), 1);
+const minCount = Math.min(...tags.map((tag) => tag.count), 1);
+
+function weight(count: number): number {
+  if (maxCount === minCount) return 5;
+  return Math.max(1, Math.min(5, Math.round(((count - minCount) / (maxCount - minCount)) * 4 + 1)));
+}
+---
+
+<h1 class="page-title-header">{title || t('tags')}</h1>
+
+{config.pageTemplates.tagsStyle === 'cloud' ? (
+  <div class="tagcloud-content">
+    {tags.map((tag) => (
+      <a
+        href={urlFor(`/tags/${tag.slug}/`)}
+        style={`font-size: ${(1 + weight(tag.count) * 0.5).toFixed(1)}rem;`}
+      >
+        {tag.name}
+      </a>
+    ))}
+  </div>
+) : (
+  <div class="tagcloud-content">
+    <ul class="tag-list" data-show-value="true">
+      {tags.map((tag) => (
+        <li>
+          <a data-weight={weight(tag.count)} href={urlFor(`/tags/${tag.slug}/`)}>
+            <i class="fa-solid fa-hashtag" aria-hidden="true"></i>{tag.name}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+)}

@@ -1,0 +1,7 @@
+---
+import config from '../../config';
+---
+<div class="progress-bar-container">
+  {config.global.scrollProgress.bar && <span class="scroll-progress-bar"></span>}
+  {config.global.singlePage && <span class="pjax-progress-bar"></span>}
+</div>

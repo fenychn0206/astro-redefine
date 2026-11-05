@@ -1,0 +1,216 @@
+---
+import config from '../../config';
+import { useTranslations } from '../../lib/i18n';
+import { getAllPosts, getPostTaxonomies } from '../../lib/posts';
+import { urlFor } from '../../lib/url';
+import Statistics from '../sidebar/Statistics.astro';
+
+interface Props {
+  isHome?: boolean;
+  hasBanner?: boolean;
+  postsCount?: number;
+  tagsCount?: number;
+  categoriesCount?: number;
+}
+
+const {
+  isHome = false,
+  hasBanner = false,
+  postsCount: postsCountProp,
+  tagsCount: tagsCountProp,
+  categoriesCount: categoriesCountProp,
+} = Astro.props;
+
+const t = useTranslations();
+const pathname = Astro.url.pathname;
+
+let postsCount = postsCountProp;
+let tagsCount = tagsCountProp;
+let categoriesCount = categoriesCountProp;
+if (postsCount === undefined || tagsCount === undefined || categoriesCount === undefined) {
+  const posts = await getAllPosts();
+  const taxonomies = getPostTaxonomies(posts);
+  postsCount = postsCount ?? posts.length;
+  tagsCount = tagsCount ?? taxonomies.tags.length;
+  categoriesCount = categoriesCount ?? taxonomies.categories.length;
+}
+
+function normalizePath(value: string): string {
+  if (!value) return '/';
+  if (/^(?:[a-z]+:)?\/\//i.test(value) || value.startsWith('mailto:') || value.startsWith('tel:')) {
+    return value;
+  }
+  return value.startsWith('/') ? value : `/${value}`;
+}
+
+function isActive(linkPath: string | undefined, current: string): boolean {
+  if (!linkPath) return false;
+  const path = normalizePath(linkPath);
+  if (/^(?:[a-z]+:)?\/\//i.test(path) || path.startsWith('mailto:') || path.startsWith('tel:')) {
+    return false;
+  }
+  if (path === '/') {
+    return current === '/' || current.startsWith('/page/');
+  }
+  return current === path || current.startsWith(`${path.replace(/\/$/, '')}/`);
+}
+
+function targetFor(path: string) {
+  return /^(?:[a-z]+:)?\/\//i.test(path) ? '_blank' : undefined;
+}
+
+function labelFor(key: string) {
+  const translated = t(key.toLowerCase());
+  return String(translated || key).toUpperCase();
+}
+
+const links = Object.entries(config.navbar.links).filter(([, link]) => link.path !== 'none');
+const sidebarLinks = Object.entries(config.home.sidebar.links || {}).filter(
+  ([key, link]) => link.path !== 'none' && !Object.prototype.hasOwnProperty.call(config.navbar.links, key),
+);
+---
+
+<header class="navbar-container px-6 md:px-12">
+  <div class:list={['navbar-content transition-navbar', { 'has-home-banner': hasBanner }]}>
+    <div class="left">
+      {config.images.logo && (
+        <a class="logo-image h-8 w-8 sm:w-10 sm:h-10 mr-3" href={urlFor('/')} aria-label={config.site.title}>
+          <img class="w-full h-full rounded-xs" src={urlFor(config.images.logo)} alt={config.site.title} />
+        </a>
+      )}
+      <a class="logo-title" href={urlFor('/')}>
+        {isHome ? <h1>{config.site.title}</h1> : config.site.title}
+      </a>
+    </div>
+
+    <div class="right">
+      <div class="desktop">
+        <ul class="navbar-list">
+          {links.map(([name, link]) => {
+            const hasSubmenus = Boolean(link.submenus && Object.keys(link.submenus).length);
+            const active = isActive(link.path, pathname);
+            const href = hasSubmenus ? '#' : urlFor(link.path || '/');
+            return (
+              <li class="navbar-item">
+                <a
+                  class:list={[hasSubmenus && 'has-dropdown', !hasSubmenus && active && 'active']}
+                  href={href}
+                  onclick={hasSubmenus ? 'return false;' : undefined}
+                  target={hasSubmenus ? undefined : targetFor(link.path || '')}
+                >
+                  {link.icon && <i class:list={[link.icon, 'fa-fw']} aria-hidden="true" />}
+                  {labelFor(name)}
+                  {hasSubmenus && <i class="fa-solid fa-chevron-down fa-fw" aria-hidden="true" />}
+                </a>
+                {hasSubmenus && (
+                  <ul class="sub-menu">
+                    {Object.entries(link.submenus || {}).map(([submenu, target]) => {
+                      const subPath = typeof target === 'string' ? target : target.path;
+                      return (
+                        <li>
+                          <a href={urlFor(subPath)} target={targetFor(subPath)}>
+                            {labelFor(submenu)}
+                          </a>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </li>
+            );
+          })}
+          {config.navbar.search.enable && (
+            <li class="navbar-item search search-popup-trigger" aria-label={t('search')}>
+              <i class="fa-solid fa-magnifying-glass" aria-hidden="true" />
+            </li>
+          )}
+        </ul>
+      </div>
+
+      <div class="mobile">
+        {config.navbar.search.enable && (
+          <div class="icon-item search search-popup-trigger">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true" />
+          </div>
+        )}
+        <div class="icon-item navbar-bar" aria-label="Menu">
+          <div class="navbar-bar-middle" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+    <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+      {links.map(([name, link]) => {
+        const hasSubmenus = Boolean(link.submenus && Object.keys(link.submenus).length);
+        const active = isActive(link.path, pathname);
+        const href = hasSubmenus ? '#' : urlFor(link.path || '/');
+        const toggleId = `submenu-${name.replace(/\s+/g, '-')}`;
+        return (
+          <li class:list={['drawer-navbar-item text-base my-1.5 flex flex-col w-full', hasSubmenus && 'drawer-navbar-item-sub']}>
+            {hasSubmenus ? (
+              <div
+                class:list={[
+                  'py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary cursor-pointer text-2xl font-semibold group border-b border-border-color hover:border-primary w-full',
+                  active && 'active',
+                ]}
+                navbar-data-toggle={toggleId}
+              >
+                <span>{labelFor(name)}</span>
+                <i class="fa-solid fa-chevron-right fa-sm fa-fw transition-all" aria-hidden="true" />
+              </div>
+            ) : (
+              <a
+                class:list={[
+                  'py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full',
+                  active && 'active',
+                ]}
+                href={href}
+                target={targetFor(link.path || '')}
+              >
+                <span>{labelFor(name)}</span>
+                {link.icon && <i class:list={[link.icon, 'fa-sm', 'fa-fw']} aria-hidden="true" />}
+              </a>
+            )}
+            {hasSubmenus && (
+              <div class="flex-col items-start px-2 py-2 hidden" data-target={toggleId}>
+                {Object.entries(link.submenus || {}).map(([submenu, target]) => {
+                  const subPath = typeof target === 'string' ? target : target.path;
+                  return (
+                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                      <a class="text-third-text-color text-xl" href={urlFor(subPath)} target={targetFor(subPath)}>
+                        {labelFor(submenu)}
+                      </a>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </li>
+        );
+      })}
+
+      {config.home.sidebar.showOnMobile && sidebarLinks.map(([name, link]) => (
+        <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+          <a
+            class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full"
+            href={urlFor(link.path)}
+            target={targetFor(link.path || '')}
+          >
+            <span>{t(name)}</span>
+            {link.icon && <i class:list={[link.icon, 'fa-sm', 'fa-fw']} aria-hidden="true" />}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <Statistics
+      postsCount={postsCount ?? 0}
+      tagsCount={tagsCount ?? 0}
+      categoriesCount={categoriesCount ?? 0}
+    />
+  </div>
+
+  <div class="window-mask"></div>
+</header>

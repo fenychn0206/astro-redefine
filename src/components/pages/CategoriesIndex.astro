@@ -1,0 +1,30 @@
+---
+import { useTranslations } from '../../lib/i18n';
+import { urlFor } from '../../lib/url';
+
+interface CategoryItem {
+  name: string;
+  count: number;
+  slug: string;
+}
+interface Props {
+  categories: CategoryItem[];
+  title?: string;
+}
+const { categories, title } = Astro.props;
+const t = useTranslations();
+---
+
+<h1 class="page-title-header">{title || t('categories')}</h1>
+<div class="category-list-content">
+  <ul class="all-category-list">
+    {categories.map((category) => (
+      <li class="all-category-list-item">
+        <a class="all-category-list-link" href={urlFor(`/categories/${category.slug}/`)}>
+          <i class="fa-regular fa-folder" aria-hidden="true"></i>&nbsp;{category.name}
+        </a>
+        <span class="all-category-list-count">{category.count}</span>
+      </li>
+    ))}
+  </ul>
+</div>

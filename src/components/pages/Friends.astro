@@ -1,0 +1,74 @@
+---
+import config from '../../config';
+import { friendGroups } from '../../lib/data';
+import { useTranslations } from '../../lib/i18n';
+
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+const t = useTranslations();
+const columnClass = config.pageTemplates.friendsColumn === 3 ? 'grid-cols-2 sm:grid-cols-3' : 'grid-cols-2';
+---
+
+<div class="friends-link-container flex flex-col">
+  <h1 class="text-[3.2rem] mt-1.5 mb-5 font-bold leading-[1]">{title}</h1>
+  {friendGroups.map((group) => (
+    <>
+    <div class="mt-2 mb-4">
+      <h2 class="text-2xl font-bold">{group.links_category}</h2>
+    </div>
+    {group.has_thumbnail ? (
+      <ul class="grid grid-cols-2 mb-6 w-full gap-4">
+        {group.list.map((friend) => (
+          <li class="group transform scale-100 transition-transform duration-100 ease-linear active:scale-95">
+            <a href={friend.link} target="_blank" rel="noopener noreferrer">
+              <div class="content rounded-lg redefine-box-shadow-flat">
+                <div class="thumbnail rounded-t-lg h-32 md:h-44 overflow-hidden">
+                  <img class="rounded-t-lg object-cover w-full h-full" src={friend.thumbnail} alt={friend.name} loading="lazy" />
+                </div>
+                <div class="avainfo flex flex-row items-center gap-1 sm:gap-2 overflow-hidden min-w-0">
+                  <div class="avatar h-16 w-16 rounded-bl-lg bg-third-background-color">
+                    {friend.avatar ? (
+                      <img class="rounded-bl-lg h-16 w-16 max-w-none" src={friend.avatar} alt={friend.name} loading="lazy" onerror="this.style.display='none'" />
+                    ) : (
+                      <i class="fa-solid fa-user-group" aria-hidden="true"></i>
+                    )}
+                  </div>
+                  <div class="flex flex-col min-w-0">
+                    <div class="text-lg text-second-text-color ellipsis group-hover:!text-primary">{friend.name}</div>
+                    <div class="text-third-text-color ellipsis">{friend.description}</div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <ul class:list={['grid mb-6 gap-4', columnClass]}>
+        {group.list.map((friend) => (
+          <li class="group transform scale-100 transition-transform duration-100 ease-linear active:scale-95">
+            <a href={friend.link} target="_blank" rel="noopener noreferrer">
+              <div class="flex flex-row items-center gap-1 sm:gap-2 overflow-hidden min-w-0 rounded-lg shadow-redefine-flat">
+                <div class="h-16 w-16 rounded-bl-lg bg-third-background-color shrink-0">
+                  {friend.avatar ? (
+                    <img class="rounded-l-lg h-16 w-16 max-w-none" src={friend.avatar} alt={friend.name} loading="lazy" onerror="this.style.display='none'" />
+                  ) : (
+                    <i class="fa-solid fa-user-group" aria-hidden="true"></i>
+                  )}
+                </div>
+                <div class="flex flex-col min-w-0">
+                  <div class="text-lg text-second-text-color ellipsis group-hover:!text-primary">{friend.name}</div>
+                  <div class="text-third-text-color ellipsis">{friend.description}</div>
+                </div>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+    </>
+  ))}
+  <div class="clear"></div>
+</div>

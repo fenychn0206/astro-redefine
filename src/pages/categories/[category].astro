@@ -1,0 +1,30 @@
+---
+import { useTranslations } from '../../lib/i18n';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostsList from '../../components/archive/PostsList.astro';
+import { getAllPosts, getPostTaxonomies } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await getAllPosts();
+  const { categories } = getPostTaxonomies(posts);
+  return categories.map((category) => ({
+    params: { category: category.slug },
+    props: {
+      category: category.name,
+      posts: posts.filter((post) => post.data.categories.includes(category.name)),
+    },
+  }));
+}
+
+const { category, posts } = Astro.props;
+const t = useTranslations();
+---
+
+<BaseLayout title={`${t('category')}: ${category}`} description={`${t('category')} ${category}`}>
+  <div class="category-name">
+    <i class="fa-solid fa-folder" aria-hidden="true"></i>&nbsp;{category}
+  </div>
+  <div class="category-post-list">
+    <PostsList posts={posts} />
+  </div>
+</BaseLayout>

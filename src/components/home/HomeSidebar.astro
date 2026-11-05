@@ -1,0 +1,77 @@
+---
+import config from '../../config';
+import { useTranslations } from '../../lib/i18n';
+import { urlFor } from '../../lib/url';
+import Avatar from '../sidebar/Avatar.astro';
+import Author from '../sidebar/Author.astro';
+import Statistics from '../sidebar/Statistics.astro';
+
+interface Props {
+  postsCount: number;
+  tagsCount: number;
+  categoriesCount: number;
+}
+const { postsCount, tagsCount, categoriesCount } = Astro.props;
+const t = useTranslations();
+const hasLinks = Object.keys(config.home.sidebar.links || {}).length > 0;
+const announcement = config.home.sidebar.announcement;
+const marginTop = { style: 'margin-top: 22.8px' };
+---
+
+<div class="home-sidebar-container">
+  <div class="sticky-container sticky">
+    {config.home.sidebar.firstItem === 'info' ? (
+      <>
+        <div class="sidebar-content">
+          <Avatar />
+          <Author postCount={postsCount} />
+          <Statistics postsCount={postsCount} tagsCount={tagsCount} categoriesCount={categoriesCount} />
+        </div>
+        {(hasLinks || announcement) && (
+          <div class="sidebar-links" {...marginTop}>
+            <div class="site-info">
+              <div class="site-name">{config.site.title}</div>
+              {announcement && hasLinks && <div class="announcement" set:html={announcement} />}
+            </div>
+            {hasLinks ? (
+              Object.entries(config.home.sidebar.links).map(([name, link]) => (
+                <a class="links" href={urlFor(link.path)}>
+                  {link.icon && <i class:list={[link.icon, 'icon-space']} aria-hidden="true" />}
+                  <span class="link-name">{t(name)}</span>
+                </a>
+              ))
+            ) : (
+              <div class="announcement-outside" set:html={announcement} />
+            )}
+          </div>
+        )}
+      </>
+    ) : (
+      <>
+        {(hasLinks || announcement) && (
+          <div class="sidebar-links">
+            <div class="site-info">
+              <div class="site-name">{config.site.title}</div>
+              {announcement && hasLinks && <div class="announcement" set:html={announcement} />}
+            </div>
+            {hasLinks ? (
+              Object.entries(config.home.sidebar.links).map(([name, link]) => (
+                <a class="links" href={urlFor(link.path)}>
+                  {link.icon && <i class:list={[link.icon, 'icon-space']} aria-hidden="true" />}
+                  <span class="link-name">{t(name)}</span>
+                </a>
+              ))
+            ) : (
+              <div class="announcement-outside" set:html={announcement} />
+            )}
+          </div>
+        )}
+        <div class="sidebar-content" {...(hasLinks || announcement ? marginTop : {})}>
+          <Avatar />
+          <Author postCount={postsCount} />
+          <Statistics postsCount={postsCount} tagsCount={tagsCount} categoriesCount={categoriesCount} />
+        </div>
+      </>
+    )}
+  </div>
+</div>

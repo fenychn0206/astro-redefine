@@ -1,0 +1,15 @@
+---
+import { useTranslations } from '../lib/i18n';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostsList from '../components/archive/PostsList.astro';
+import { getAllPosts } from '../lib/posts';
+
+const t = useTranslations();
+const posts = await getAllPosts();
+---
+
+<BaseLayout title={t('archives')} description={`${t('archives')} - ${t('site_posts', posts.length)}`}>
+  <div class="archive-container shadow-none hover:shadow-none sm:shadow-redefine sm:hover:shadow-redefine-hover">
+    <PostsList posts={posts} />
+  </div>
+</BaseLayout>

@@ -1,0 +1,16 @@
+---
+import { useTranslations } from '../../lib/i18n';
+import { urlFor } from '../../lib/url';
+const t = useTranslations();
+---
+<div class="nf-container">
+  <div class="nf-text">
+    <h1>404<br />Page Not Found</h1>
+  </div>
+  <div class="nf-button">
+    <a href={urlFor('/')} class="button large center">
+      <i class="fa-regular fa-house" aria-hidden="true"></i>
+      {t('go-back-home')}
+    </a>
+  </div>
+</div>

@@ -1,0 +1,86 @@
+---
+import config from '../../config';
+import { useTranslations } from '../../lib/i18n';
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: Heading[];
+  title: string;
+}
+const { headings, title } = Astro.props;
+const t = useTranslations();
+const maxDepth = config.articles.toc.maxDepth || 3;
+const filtered = headings.filter((heading) => heading.depth <= maxDepth);
+
+type Node = Heading & { children: Node[] };
+const roots: Node[] = [];
+const stack: Node[] = [];
+
+for (const heading of filtered) {
+  const node: Node = { ...heading, children: [] };
+  while (stack.length && stack[stack.length - 1].depth >= node.depth) {
+    stack.pop();
+  }
+  if (stack.length) stack[stack.length - 1].children.push(node);
+  else roots.push(node);
+  stack.push(node);
+}
+
+let counter = 0;
+---
+
+{filtered.length > 0 && (
+  <div class="post-toc-wrap">
+    <div class="post-toc">
+      <div class="toc-title">{t('toc')}</div>
+      <div class="page-title">{title}</div>
+      <ol class="nav">
+        {roots.map((node) => (
+          <li class:list={['nav-item', 'nav-level-1']}>
+            <a class="nav-link" href={`#${node.slug}`}>
+              {config.articles.toc.number && <span class="nav-number">{++counter}. </span>}
+              <span class="nav-text">{node.text}</span>
+            </a>
+            {node.children.length > 0 && (
+              <ol class="nav-child">
+                {node.children.map((child) => (
+                  <li class="nav-item nav-level-2">
+                    <a class="nav-link" href={`#${child.slug}`}>
+                      {config.articles.toc.number && <span class="nav-number">{++counter}. </span>}
+                      <span class="nav-text">{child.text}</span>
+                    </a>
+                    {child.children.length > 0 && (
+                      <ol class="nav-child">
+                        {child.children.map((grandchild) => (
+                          <li class="nav-item nav-level-3">
+                            <a class="nav-link" href={`#${grandchild.slug}`}>
+                              {config.articles.toc.number && <span class="nav-number">{++counter}. </span>}
+                              <span class="nav-text">{grandchild.text}</span>
+                            </a>
+                          </li>
+                        ))}
+                      </ol>
+                    )}
+                  </li>
+                ))}
+              </ol>
+            )}
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+)}
+
+{!config.articles.toc.expand && (
+  <style>
+    .post-toc .nav .nav-child { display: none; }
+    .post-toc .nav .active > .nav-child,
+    .post-toc .nav .active-current > .nav-child { display: block; }
+  </style>
+)}

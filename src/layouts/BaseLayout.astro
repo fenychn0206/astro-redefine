@@ -1,0 +1,170 @@
+---
+import '../styles/global.css';
+
+import config, { getClientConfig } from '../config';
+import { useTranslations } from '../lib/i18n';
+import { getAllPosts, getPostTaxonomies } from '../lib/posts';
+import { urlFor } from '../lib/url';
+import Head from '../components/head/Head.astro';
+import Navbar from '../components/header/Navbar.astro';
+import ProgressBar from '../components/header/ProgressBar.astro';
+import Preloader from '../components/header/Preloader.astro';
+import Footer from '../components/footer/Footer.astro';
+import HomeBanner from '../components/home/HomeBanner.astro';
+import HomeBackground from '../components/home/HomeBackground.astro';
+import HomeSidebar from '../components/home/HomeSidebar.astro';
+import SideTools from '../components/utils/SideTools.astro';
+import LocalSearch from '../components/utils/LocalSearch.astro';
+import ImageViewer from '../components/utils/ImageViewer.astro';
+import PostTools from '../components/post/PostTools.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  isHome?: boolean;
+  showBanner?: boolean;
+  showBackground?: boolean;
+  isPost?: boolean;
+  hasToc?: boolean;
+  tocOpen?: boolean;
+  comment?: boolean;
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  keywords?: string;
+  canonical?: string;
+  hasMermaid?: boolean;
+}
+
+const {
+  title,
+  description,
+  image,
+  type = 'website',
+  noindex = false,
+  isHome = false,
+  showBanner = false,
+  showBackground = false,
+  isPost = false,
+  hasToc = false,
+  tocOpen,
+  comment = true,
+  publishedTime,
+  modifiedTime,
+  keywords,
+  canonical,
+  hasMermaid = false,
+} = Astro.props;
+
+const t = useTranslations();
+const posts = await getAllPosts();
+const taxonomies = getPostTaxonomies(posts);
+const postsCount = posts.length;
+const tagsCount = taxonomies.tags.length;
+const categoriesCount = taxonomies.categories.length;
+
+const sidebar = isHome && config.home.sidebar.enable ? config.home.sidebar : null;
+const clientConfig = getClientConfig();
+const tocIsOpen = tocOpen ?? hasToc;
+const panguScript = config.articles.pangu ? urlFor('/js/libs/pangu.min.js') : '';
+---
+
+<!doctype html>
+<html lang={config.site.language}>
+  <head>
+    <Head
+      title={title}
+      description={description}
+      image={image}
+      type={type}
+      noindex={noindex}
+      isHome={isHome}
+      publishedTime={publishedTime}
+      modifiedTime={modifiedTime}
+      keywords={keywords}
+      canonical={canonical}
+    />
+    {config.global.preloader.enable && (
+      <script is:inline src={urlFor('/js/libs/anime.min.js')}></script>
+    )}
+    {config.footer.runtime && (
+      <>
+        <link rel="stylesheet" href={urlFor('/assets/odometer-theme-minimal.css')} />
+        <script is:inline defer src={urlFor('/js/libs/odometer.min.js')}></script>
+      </>
+    )}
+    {config.articles.pangu && <script is:inline defer src={panguScript}></script>}
+    {hasMermaid && config.plugins.mermaid.enable && (
+      <script is:inline defer src={urlFor('/js/libs/mermaid.min.js')}></script>
+    )}
+    {config.plugins.aplayer.enable && (
+      <script is:inline defer src={urlFor('/js/libs/APlayer.min.js')}></script>
+    )}
+  </head>
+  <body data-page={Astro.url.pathname} data-base={urlFor('/')}>
+    <ProgressBar />
+    {config.global.preloader.enable && <Preloader />}
+
+    <main class="page-container" id="swup">
+      {showBanner && <HomeBanner />}
+      {!showBanner && showBackground && <HomeBackground />}
+
+      <div class="main-content-container flex flex-col justify-between min-h-dvh">
+        <div class="main-content-header">
+          <Navbar
+            isHome={isHome}
+            hasBanner={showBanner}
+            postsCount={postsCount}
+            tagsCount={tagsCount}
+            categoriesCount={categoriesCount}
+          />
+        </div>
+
+        <div class="main-content-body transition-fade-up">
+          {sidebar && sidebar.position === 'left' && (
+            <HomeSidebar
+              postsCount={postsCount}
+              tagsCount={tagsCount}
+              categoriesCount={categoriesCount}
+            />
+          )}
+
+          <div class:list={['main-content', tocIsOpen && 'has-toc']}>
+            <slot />
+          </div>
+
+          {sidebar && sidebar.position === 'right' && (
+            <HomeSidebar
+              postsCount={postsCount}
+              tagsCount={tagsCount}
+              categoriesCount={categoriesCount}
+            />
+          )}
+        </div>
+
+        <div class="main-content-footer">
+          <Footer />
+        </div>
+      </div>
+
+      {isPost && <PostTools hasToc={hasToc} comment={comment} />}
+
+      <div class="right-side-tools-container">
+        <SideTools />
+      </div>
+
+      <ImageViewer />
+      {config.navbar.search.enable && <LocalSearch />}
+    </main>
+
+    <script type="application/json" id="redefine-config" set:html={JSON.stringify(clientConfig)}></script>
+    <script is:inline set:html={`window.__REDEFINE_I18N__ = ${JSON.stringify({ search: t('search'), noResult: t('search'), exifTitle: 'EXIF' })};`}></script>
+    {config.plugins.aplayer.enable && <div id="aplayer"></div>}
+
+    <script>
+      import '../scripts/theme';
+    </script>
+  </body>
+</html>

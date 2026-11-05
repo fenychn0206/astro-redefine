@@ -1,0 +1,70 @@
+---
+import { bookmarkGroups } from '../../lib/data';
+
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+
+function slug(value: string): string {
+  return value.toLowerCase().replace(/\s+/g, '-');
+}
+---
+
+<div class="py-8 sm:py-0">
+  <h1 class="page-title-header">{title}</h1>
+  <div class="flex flex-col md:flex-row gap-6 md:gap-12 w-full">
+    <div class="w-full md:w-48 shrink-0 md:sticky md:top-[var(--navbar-height)] h-fit sm:py-6">
+      <nav class="flex md:block overflow-x-auto scrollbar-hide pb-4 md:pb-0 gap-2">
+        {bookmarkGroups.map((group) => (
+          <a
+            href={`#${slug(group.category)}`}
+            class="whitespace-nowrap md:whitespace-normal block px-3 py-2 rounded-lg hover:bg-second-background-color hover:text-primary hover:scale-102 transition-all duration-200 border border-transparent hover:border-second-background-color shrink-0 font-medium bookmark-nav-item"
+            data-category={slug(group.category)}
+          >
+            <i class:list={['fa-regular', group.icon, 'mr-2', 'w-6', 'h-6']} aria-hidden="true"></i>
+            {group.category}
+          </a>
+        ))}
+      </nav>
+    </div>
+
+    <div class="flex-1 max-w-full">
+      {bookmarkGroups.map((group) => (
+        <section id={slug(group.category)} class="mb-12">
+          <h2 class="text-2xl font-semibold text-second-text-color mb-4 pb-2 border-b border-border-color">
+            {group.category}
+          </h2>
+          <div class="grid gap-6 lg:grid-cols-2">
+            {group.items.map((item) => (
+              <a href={item.link} target="_blank" rel="noopener noreferrer" class="group block">
+                <div class="p-5 rounded-xl redefine-box-shadow-flat transition-all duration-300 hover:transform hover:-translate-y-1">
+                  <div class="flex items-center gap-5">
+                    <div class="w-12 h-12 rounded-xl overflow-hidden bg-second-background-color shrink-0 transform group-hover:scale-105 transition-transform duration-300">
+                      <img
+                        src={item.image || '/images/bookmark-placeholder.svg'}
+                        alt={item.name}
+                        loading="lazy"
+                        class="w-full h-full object-cover"
+                        onerror="this.src='/images/bookmark-placeholder.svg'"
+                      />
+                    </div>
+                    <div class="flex-1 min-w-0 flex flex-col gap-1">
+                      <div class="flex items-center justify-between">
+                        <h3 class="font-medium text-second-text-color group-hover:text-primary transition-colors">
+                          {item.name}
+                        </h3>
+                        <i class="fa-regular fa-arrow-right text-third-text-color opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all duration-300" aria-hidden="true"></i>
+                      </div>
+                      <p class="text-sm text-third-text-color line-clamp-2">{item.description}</p>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </div>
+</div>
