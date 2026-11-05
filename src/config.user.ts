@@ -97,7 +97,7 @@ const userConfig: DeepPartial<RedefineConfig> = {
       artalk: {
         // Artalk 后端地址；需在控制台创建同名站点，并允许本站 Origin 跨域。
         server: 'https://artalk.ooowl.net',
-        site: 'Theme Redefine',
+        site: 'redefine-demo',
         pageKey: 'pathname',
         pageTitle: '',
         preferRemoteConf: false,

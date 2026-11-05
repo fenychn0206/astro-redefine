@@ -91,7 +91,7 @@ const userConfig: DeepPartial<RedefineConfig> = {
 
 规则：对象会递归合并，数组（导航、社交链接等）会整体替换默认值。
 
-演示站使用 Artalk 评论系统，服务器地址和站点名在 `config.user.ts` 中设置。Artalk 后端需要允许站点域名跨域访问，并在控制台创建同名站点。
+演示站使用 Artalk 评论系统（`https://artalk.ooowl.net`，站点名 `redefine-demo`）。Artalk 后端只允许 `https://astro-redefine.ooowl.net` 跨域，本地 `localhost` 开发时评论请求会被 CORS 拦截。
 
 完整说明见演示文章：[`src/content/posts/theme-configuration.md`](./src/content/posts/theme-configuration.md)。
 

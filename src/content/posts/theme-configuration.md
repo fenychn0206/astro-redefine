@@ -244,8 +244,8 @@ comment: {
     artalk: {
       // Artalk 后端地址
       server: 'https://artalk.ooowl.net',
-      // 必须与 Artalk 控制台中创建的站点名称一致
-      site: 'Theme Redefine',
+      // 必须与 Artalk 控制台中的站点名称一致
+      site: 'redefine-demo',
       pageKey: 'pathname',
       pageTitle: '',
       locale: 'zh-CN',
@@ -264,7 +264,7 @@ comment: {
 
 `server` 和 `site` 是必填项。`site` 为空或与后端站点不一致时，Artalk 会返回“未找到站点”。
 
-> 演示站使用 `https://artalk.ooowl.net`，站点名为 `Theme Redefine`。部署时需要在 Artalk 控制台创建同名站点，并允许站点域名（例如 `https://astro-redefine.ooowl.net`）跨域访问，否则浏览器会拦截 `/api/v2/conf`。
+> 演示站使用 `https://artalk.ooowl.net`，站点名为 `redefine-demo`。Artalk 服务端只允许 `https://astro-redefine.ooowl.net` 跨域，因此本地 `localhost` 开发时评论请求会被浏览器拦截；部署到该域名后可正常加载。
 
 常用 Artalk 配置：
 
