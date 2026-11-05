@@ -4,25 +4,25 @@
     - description:
         A platform for writers and readers to share ideas and perspectives.
         Features both free and premium content with a strong tech and startup focus.
-      image: https://picsum.photos/seed/f295c6582b2d3764ca56e38a74618b4a/800/600
+      image: https://assets.ohevan.com/img/f295c6582b2d3764ca56e38a74618b4a.png
       link: https://medium.com/
       name: Medium
     - description:
         Popular newsletter platform that lets writers monetize their content
         through paid subscriptions. Great for independent journalists and creators.
-      image: https://picsum.photos/seed/dfcc31215ace60952d571ad5574d441a/800/600
+      image: https://assets.ohevan.com/img/dfcc31215ace60952d571ad5574d441a.png
       link: https://substack.com/
       name: Substack
     - description:
         Open-source publishing platform designed for professional publishers,
         bloggers, and newsletter creators. Offers both hosted and self-hosted options.
-      image: https://picsum.photos/seed/5e445fdbfbe609f5e31000ff51b298b4/800/600
+      image: https://assets.ohevan.com/img/5e445fdbfbe609f5e31000ff51b298b4.png
       link: https://ghost.org/
       name: Ghost
     - description:
         All-in-one marketing platform with powerful newsletter features.
         Perfect for businesses looking to grow their email subscriber base.
-      image: https://picsum.photos/seed/753340f798ca5a4eb8b2d72ad9d7620c/800/600
+      image: https://assets.ohevan.com/img/753340f798ca5a4eb8b2d72ad9d7620c.png
       link: https://mailchimp.com/
       name: Mailchimp
 - category: Chat AI
@@ -31,19 +31,19 @@
     - description:
         An AI language model that can assist with a variety of tasks, including
         writing, brainstorming, and answering questions.
-      image: https://picsum.photos/seed/b6b13aa43b541c7a8331d76978a2f9a0/800/600
+      image: https://assets.ohevan.com/img/b6b13aa43b541c7a8331d76978a2f9a0.png
       link: https://chat.openai.com/
       name: ChatGPT
     - description:
         An AI language model that can assist with a variety of tasks, including
         writing, brainstorming, and answering questions.
-      image: https://picsum.photos/seed/7c204ad49a9699461116ed92e20e9a3c/800/600
+      image: https://assets.ohevan.com/img/7c204ad49a9699461116ed92e20e9a3c.png
       link: https://www.anthropic.com/
       name: Claude
     - description:
         Google's AI language model that can assist with a variety of tasks,
         including writing, brainstorming, and answering questions.
-      image: https://picsum.photos/seed/e9ec153676355307aa703869c83ad3d7/800/600
+      image: https://assets.ohevan.com/img/e9ec153676355307aa703869c83ad3d7.webp
       link: https://gemini.google.com/app
       name: Gemini
     - description:
@@ -58,26 +58,26 @@
     - description:
         Metasploit is an open-source framework for developing and executing
         exploit code against a remote target machine.
-      image: https://picsum.photos/seed/e66ca37078307d1d1c1ae6af87b14d18/800/600
+      image: https://assets.ohevan.com/img/e66ca37078307d1d1c1ae6af87b14d18.webp
       link: https://www.metasploit.com/
       name: Metasploit
     - description:
         Nmap is a free and open-source network scanner designed to discover
         hosts and services on a computer network, thus creating a "map" of the network.
-      image: https://picsum.photos/seed/7b43ef3b226a95410677c8775875849c/800/600
+      image: https://assets.ohevan.com/img/7b43ef3b226a95410677c8775875849c.jpeg
       link: https://nmap.org/
       name: Nmap
     - description:
         Wireshark is a free and open-source network protocol analyzer. It
         is used for network troubleshooting, analysis, and protocol development.
-      image: https://picsum.photos/seed/fbcc9873fdf87779b92910bb0d4eb4bc/800/600
+      image: https://assets.ohevan.com/img/fbcc9873fdf87779b92910bb0d4eb4bc.png
       link: https://www.wireshark.org/
       name: Wireshark
     - description:
         SQLMap is an open-source penetration testing tool that automates
         the process of detecting and exploiting SQL injection flaws and taking over
         database servers.
-      image: https://picsum.photos/seed/5a58eab6936d7a0d5bd1d299c0bebcf1/800/600
+      image: https://assets.ohevan.com/img/5a58eab6936d7a0d5bd1d299c0bebcf1.png
       link: https://sqlmap.org/
       name: SQLMap
 - category: PaaS
@@ -87,7 +87,7 @@
         Vercel is a platform for deploying and scaling web applications.
         It provides a seamless development experience with features like automatic HTTPS,
         global CDN, and serverless functions.
-      image: https://picsum.photos/seed/aad702a57baaa7dbd17e896342f5f0a0/800/600
+      image: https://assets.ohevan.com/img/aad702a57baaa7dbd17e896342f5f0a0.png
       link: https://vercel.com/
       name: Vercel
     - description:
@@ -99,7 +99,7 @@
     - description:
         Netlify is a cloud computing company that offers a range of services,
         including web security, content delivery, and analytics.
-      image: https://picsum.photos/seed/7a2b00fb6bbc3333d1927425ab1a7859/800/600
+      image: https://assets.ohevan.com/img/7a2b00fb6bbc3333d1927425ab1a7859.png
       link: https://www.netlify.com/
       name: Netlify
 - category: CMS
@@ -108,13 +108,13 @@
     - description:
         WordPress is a free and open-source content management system (CMS)
         based on PHP and MySQL.
-      image: https://picsum.photos/seed/4d5d99579df60af4135982bc05560b35/800/600
+      image: https://assets.ohevan.com/img/4d5d99579df60af4135982bc05560b35.png
       link: https://wordpress.org/
       name: WordPress
     - description:
         Ghost is an open-source publishing platform designed for professional
         publishers, bloggers, and newsletter creators. Offers both hosted and self-hosted
         options.
-      image: https://picsum.photos/seed/5e445fdbfbe609f5e31000ff51b298b4/800/600
+      image: https://assets.ohevan.com/img/5e445fdbfbe609f5e31000ff51b298b4.png
       link: https://ghost.org/
       name: Ghost

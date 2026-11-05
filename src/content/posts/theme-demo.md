@@ -3,11 +3,7 @@ title: 主题样式 Demo
 date: 2022-10-02 19:07:05
 tags: 
     - "Demo"
-    - "Hexo"
-    - "Hexo Theme"
-    - "Hexo Theme Redefine"
-thumbnail: https://picsum.photos/seed/d00ebf818778f3aad141173167ad0e52/800/600
-sticky: 999
+sticky: 100
 categories: 
     - "Demo"
     - "Hexo"
