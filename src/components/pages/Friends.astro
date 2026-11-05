@@ -13,9 +13,11 @@ const columnClass = config.pageTemplates.friendsColumn === 3 ? 'grid-cols-2 sm:g
   <h1 class="text-[3.2rem] mt-1.5 mb-5 font-bold leading-[1]">{title}</h1>
   {friendGroups.map((group) => (
     <>
-    <div class="mt-2 mb-4">
-      <h2 class="text-2xl font-bold">{group.links_category}</h2>
-    </div>
+    {group.links_category && (
+      <div class="mt-2 mb-4">
+        <h2 class="text-2xl font-bold">{group.links_category}</h2>
+      </div>
+    )}
     {group.has_thumbnail ? (
       <ul class="grid grid-cols-2 mb-6 w-full gap-4">
         {group.list.map((friend) => (
@@ -28,7 +30,7 @@ const columnClass = config.pageTemplates.friendsColumn === 3 ? 'grid-cols-2 sm:g
                 <div class="avainfo flex flex-row items-center gap-1 sm:gap-2 overflow-hidden min-w-0">
                   <div class="avatar h-16 w-16 rounded-bl-lg bg-third-background-color">
                     {friend.avatar ? (
-                      <img class="rounded-bl-lg h-16 w-16 max-w-none" src={friend.avatar} alt={friend.name} loading="lazy" onerror="this.style.display='none'" />
+                      <img class="rounded-bl-lg h-16 w-16 max-w-none" src={friend.avatar} alt={friend.name} loading="lazy" onerror="this.src='/images/redefine-avatar.svg';this.onerror=null" />
                     ) : (
                       <i class="fa-solid fa-user-group" aria-hidden="true"></i>
                     )}
@@ -51,7 +53,7 @@ const columnClass = config.pageTemplates.friendsColumn === 3 ? 'grid-cols-2 sm:g
               <div class="flex flex-row items-center gap-1 sm:gap-2 overflow-hidden min-w-0 rounded-lg shadow-redefine-flat">
                 <div class="h-16 w-16 rounded-bl-lg bg-third-background-color shrink-0">
                   {friend.avatar ? (
-                    <img class="rounded-l-lg h-16 w-16 max-w-none" src={friend.avatar} alt={friend.name} loading="lazy" onerror="this.style.display='none'" />
+                    <img class="rounded-l-lg h-16 w-16 max-w-none" src={friend.avatar} alt={friend.name} loading="lazy" onerror="this.src='/images/redefine-avatar.svg';this.onerror=null" />
                   ) : (
                     <i class="fa-solid fa-user-group" aria-hidden="true"></i>
                   )}

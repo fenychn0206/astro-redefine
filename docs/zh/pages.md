@@ -41,20 +41,27 @@ comment: true
 
 ## 友情链接
 
-数据位于 `src/data/links.yml`：
+数据位于 `src/data/friends.json`：
 
-```yaml
-- links_category: 朋友们
-  has_thumbnail: false
-  list:
-    - name: Example Blog
-      link: https://friend.example.com
-      description: 一个示例站点。
-      avatar: https://img.example.com/avatar.webp
+```json
+[
+  {
+    "name": "Example Blog",
+    "url": "https://friend.example.com",
+    "avatar": "https://img.example.com/avatar.webp"
+  }
+]
 ```
 
-- `has_thumbnail: true` 时显示大图，需要为每个条目提供 `thumbnail`。
-- 列数由 `pageTemplates.friendsColumn` 控制，可选 `2` 或 `3`。
+如果数据没有 `description`，页面会使用链接域名作为副标题。列数由 `pageTemplates.friendsColumn` 控制，可选 `2` 或 `3`。
+
+远程数据可以通过脚本同步：
+
+```bash
+node scripts/fetch-friends.mjs
+```
+
+也可以设置 `package.json` 脚本后再执行 `npm run friends:sync`。
 
 ## 说说
 

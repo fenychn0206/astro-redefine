@@ -41,19 +41,27 @@ comment: true
 
 ## Friends
 
-Data lives in `src/data/links.yml`:
+Data lives in `src/data/friends.json`:
 
-```yaml
-- links_category: Friends
-  has_thumbnail: false
-  list:
-    - name: Example Blog
-      link: https://friend.example.com
-      description: An example site.
-      avatar: https://img.example.com/avatar.webp
+```json
+[
+  {
+    "name": "Example Blog",
+    "url": "https://friend.example.com",
+    "avatar": "https://img.example.com/avatar.webp"
+  }
+]
 ```
 
-Set `has_thumbnail: true` to show large images; provide a `thumbnail` for each item. `pageTemplates.friendsColumn` controls the column count (`2` or `3`).
+If `description` is missing, the link hostname is shown as the subtitle. `pageTemplates.friendsColumn` controls the column count (`2` or `3`).
+
+Refresh the vendored data with:
+
+```bash
+node scripts/fetch-friends.mjs
+```
+
+You can also add an npm script and run `npm run friends:sync`.
 
 ## Essays
 

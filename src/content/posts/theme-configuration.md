@@ -227,7 +227,7 @@ description: 第一篇文章。
 
 演示站点的友情链接、说说、书签和瀑布流数据放在 `src/data/`：
 
-- `links.yml`：友情链接分组与缩略图。
+- `friends.json`：友情链接，可由 `scripts/fetch-friends.mjs` 同步。
 - `essays.yml`：说说内容与日期。
 - `bookmarks.yml`：书签分类与条目。
 - `masonry.yml`：相册图片、标题与描述。

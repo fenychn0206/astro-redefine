@@ -1,6 +1,6 @@
 import YAML from 'yaml';
 
-import linksRaw from '../data/links.yml?raw';
+import friendsRaw from '../data/friends.json?raw';
 import essaysRaw from '../data/essays.yml?raw';
 import masonryRaw from '../data/masonry.yml?raw';
 import bookmarksRaw from '../data/bookmarks.yml?raw';
@@ -46,7 +46,39 @@ export interface BookmarkGroup {
   items: BookmarkItem[];
 }
 
-export const friendGroups = (YAML.parse(linksRaw) ?? []) as FriendGroup[];
+interface RemoteFriend {
+  name: string;
+  url: string;
+  avatar?: string;
+  description?: string;
+}
+
+function hostnameOf(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    return '';
+  }
+}
+
+const remoteFriends = (JSON.parse(friendsRaw) ?? []) as RemoteFriend[];
+
+export const friendGroups: FriendGroup[] = remoteFriends.length
+  ? [
+      {
+        links_category: '',
+        has_thumbnail: false,
+        list: remoteFriends
+          .filter((friend) => friend.name && friend.url)
+          .map((friend) => ({
+            name: friend.name,
+            link: friend.url,
+            avatar: friend.avatar,
+            description: friend.description || hostnameOf(friend.url),
+          })),
+      },
+    ]
+  : [];
 export const essays = (YAML.parse(essaysRaw) ?? []) as Essay[];
 export const masonryItems = (YAML.parse(masonryRaw) ?? []) as MasonryItem[];
 export const bookmarkGroups = (YAML.parse(bookmarksRaw) ?? []) as BookmarkGroup[];

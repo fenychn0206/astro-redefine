@@ -57,7 +57,7 @@ const userConfig: DeepPartial<RedefineConfig> = {
       More: {
         icon: 'fa-regular fa-link',
         submenus: {
-          Showcase: '/showcase/',
+          Friends: '/showcase/',
           Bookmarks: '/bookmarks/',
           Essays: '/essays/',
         },
