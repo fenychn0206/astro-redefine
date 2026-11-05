@@ -5,7 +5,7 @@
 - 使用 **Markdown / MDX-free content collections** 写作
 - 使用 **Tailwind CSS v4** 与原主题 Stylus 样式
 - 使用 **`:::` 指令** 取代 Hexo 的 Nunjucks/EJS 标签
-- 使用 **`src/config.ts`** 统一配置站点与主题
+- 使用 **`src/config.user.ts`** 配置站点，**`src/config.default.ts`** 提供默认值
 - 静态构建、零运行时框架、支持深浅色、站内搜索、RSS、Mermaid、评论、图片查看器
 
 ## 快速开始
@@ -21,7 +21,9 @@ npm run preview
 
 ```text
 src/
-├── config.ts                 # 站点与主题配置（唯一配置入口）
+├── config.user.ts            # 用户配置（编辑此文件）
+├── config.default.ts         # 默认配置与类型（一般不改）
+├── config.ts                 # 深度合并入口
 ├── content.config.ts         # posts / pages 集合 schema
 ├── content/
 │   ├── posts/                # Markdown 文章
@@ -50,27 +52,34 @@ src/
 
 ## 配置
 
-所有站点信息、主题选项都在 [`src/config.ts`](./src/config.ts)。常用字段：
+站点信息与主题选项写在 [`src/config.user.ts`](./src/config.user.ts)。它只需要写想覆盖的字段，未设置的部分会使用 [`src/config.default.ts`](./src/config.default.ts) 的默认值。`src/config.ts` 负责把两者深度合并后导出。
+
+常用字段：
 
 ```ts
-site: {
-  title: 'Theme Redefine',
-  subtitle: 'Redefine Theme Demo Site',
-  author: 'Redefine',
-  language: 'en',
-  url: 'https://astro-redefine.example.com',
-  postsPerPage: 10,
-},
-colors: { primary: '#A31F34', defaultMode: 'light' },
-homeBanner: { enable: true, style: 'fixed' },
-navbar: { search: { enable: true } },
-articles: {
-  toc: { enable: true, initOpen: true },
-  codeBlock: { copy: true, style: 'mac' },
-  recommendation: { enable: true },
-},
-comment: { enable: true, system: 'waline' },
+// src/config.user.ts
+const userConfig: DeepPartial<RedefineConfig> = {
+  site: {
+    title: 'Theme Redefine',
+    subtitle: 'Redefine Theme Demo Site',
+    author: 'Redefine',
+    language: 'en',
+    url: 'https://astro-redefine.example.com',
+    postsPerPage: 10,
+  },
+  colors: { primary: '#A31F34', defaultMode: 'light' },
+  homeBanner: { enable: true, style: 'fixed' },
+  navbar: { search: { enable: true } },
+  articles: {
+    toc: { enable: true, initOpen: true },
+    codeBlock: { copy: true, style: 'mac' },
+    recommendation: { enable: true },
+  },
+  comment: { enable: true, system: 'waline' },
+};
 ```
+
+规则：对象会递归合并，数组（导航、社交链接等）会整体替换默认值。
 
 完整说明见演示文章：[`src/content/posts/theme-configuration.md`](./src/content/posts/theme-configuration.md)。
 

@@ -16,16 +16,43 @@ Redefine for Astro 把站点与主题配置集中到一处，并把 Hexo 专用�
 
 ## 配置文件
 
-站点与主题的所有设置都在 `src/config.ts` 中。它是一份带类型提示的 TypeScript 文件，修改后无需再改模板。
+配置拆分为两个文件，并保留一个合并入口：
+
+| 文件 | 作用 |
+| --- | --- |
+| `src/config.user.ts` | 用户配置，平时只需要编辑这个文件 |
+| `src/config.default.ts` | 主题默认值与 TypeScript 类型 |
+| `src/config.ts` | 深度合并上面两个文件并导出 `config` |
+
+`src/config.user.ts` 只需要写想覆盖的字段。对象会递归合并，数组（导航、社交链接等）会整体替换默认值：
+
+```ts
+import type { DeepPartial, RedefineConfig } from './config.default';
+
+const userConfig: DeepPartial<RedefineConfig> = {
+  site: {
+    title: '我的博客',
+    author: 'Your Name',
+  },
+  colors: {
+    primary: '#0066CC',
+  },
+  navbar: {
+    search: { enable: true },
+  },
+};
+
+export default userConfig;
+```
+
+页面和组件中仍然从合并后的入口读取配置：
 
 ```ts
 import config from '../config';
 
 config.site.title;        // 站点标题
-config.site.description;  // 站点描述
-config.images.avatar;     // 头像
 config.colors.primary;    // 主题色
-config.homeBanner.enable; // 首页大图
+config.images.avatar;     // 头像
 config.articles.toc;      // 文章目录
 config.comment.system;    // 评论系统
 ```
@@ -47,7 +74,7 @@ config.comment.system;    // 评论系统
 | `plugins` | RSS、APlayer、Mermaid |
 
 :::note{type=info title="修改后自动生效"}
-开发模式下保存 `src/config.ts` 会触发页面刷新；生产环境请重新执行 `npm run build`。
+开发模式下保存 `src/config.user.ts` 会触发页面刷新；生产环境请重新执行 `npm run build`。`src/config.default.ts` 一般只在维护主题默认值时修改。
 :::
 
 ## 站点信息
@@ -55,7 +82,8 @@ config.comment.system;    // 评论系统
 最小配置只需要修改 `site`、`images` 和 `colors`：
 
 ```ts
-const config = {
+// src/config.user.ts
+const userConfig: DeepPartial<RedefineConfig> = {
   site: {
     title: '我的博客',
     subtitle: '记录与分享',
@@ -76,7 +104,6 @@ const config = {
     defaultMode: 'light',
   },
 };
-```
 
 ## 编写文章
 
@@ -156,7 +183,7 @@ description: 第一篇文章。
 
 ::::tabs{name="config-example"}
 :::tab[配置文件]
-修改 `src/config.ts` 中的 `site` 与 `colors`。
+修改 `src/config.user.ts` 中的 `site` 与 `colors`。
 :::
 :::tab[文章目录]
 文章放在 `src/content/posts/`，目录由 `articles.toc` 控制。
@@ -207,7 +234,7 @@ description: 第一篇文章。
 
 ## 评论、搜索与统计
 
-评论系统在 `config.comment` 中切换：
+评论系统在 `src/config.user.ts` 的 `comment` 中切换。主题默认关闭评论；填入自己的服务地址后即可启用：
 
 ```ts
 comment: {
@@ -222,7 +249,7 @@ comment: {
 }
 ```
 
-站内搜索由主题自动生成 `search.json`，无需额外插件；在 `config.navbar.search.enable` 中开启即可。页脚访问量使用 `global.websiteCounter`，默认接入 vercount。
+站内搜索由主题自动生成 `search.json`，无需额外插件；在 `src/config.user.ts` 的 `navbar.search.enable` 中开启即可。页脚访问量使用 `global.websiteCounter`，默认接入 vercount。
 
 ## 常用命令
 

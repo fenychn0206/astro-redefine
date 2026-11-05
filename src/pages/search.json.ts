@@ -2,11 +2,9 @@ import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 
 import config from '../config';
-import { getAllPosts, getExcerpt, getPostPath, stripMarkdown } from '../lib/posts';
-import { useTranslations } from '../lib/i18n';
+import { getAllPosts, getPostPath, stripMarkdown } from '../lib/posts';
 
 export const GET: APIRoute = async () => {
-  const t = useTranslations();
   const posts = await getAllPosts();
   const entries = posts.map((post) => ({
     title: post.data.title,

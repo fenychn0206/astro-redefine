@@ -623,7 +623,7 @@ function loadStylesheet(href: string, id: string): void {
   document.head.appendChild(link);
 }
 
-async function initWaline(root: HTMLElement): Promise<void> {
+async function initWaline(_root: HTMLElement): Promise<void> {
   const config = theme.comment?.config?.waline || {};
   if (!config.serverUrl) return;
   try {
