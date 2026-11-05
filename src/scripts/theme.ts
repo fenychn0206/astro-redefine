@@ -74,7 +74,14 @@ function isDark(): boolean {
   return document.documentElement.classList.contains('dark');
 }
 
-function setTheme(dark: boolean): void {
+function resolveDarkTheme(): boolean {
+  const stored = storedStatus();
+  if (typeof stored.isDark === 'boolean') return stored.isDark;
+  if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) return true;
+  return theme.colors?.defaultMode === 'dark';
+}
+
+function applyThemeState(dark: boolean, persist = false): void {
   const root = document.documentElement;
   const body = document.body;
   root.classList.toggle('dark', dark);
@@ -84,10 +91,23 @@ function setTheme(dark: boolean): void {
   body?.classList.toggle('light-mode', !dark);
   const icon = $('.tool-dark-light-toggle i');
   if (icon) icon.className = dark ? 'fa-regular fa-brightness' : 'fa-regular fa-moon';
-  saveStatus({ isDark: dark });
+  if (persist) saveStatus({ isDark: dark });
   updateGiscusTheme(dark);
   updateUtterancesTheme(dark);
   renderMermaid(true);
+}
+
+/**
+ * Re-apply the stored/system theme after Astro swaps the document body.
+ * Without this the new body loses its `dark-mode`/`light-mode` class and the
+ * code-theme variables no longer match the `<html class="dark">` state.
+ */
+function syncTheme(): void {
+  applyThemeState(resolveDarkTheme(), false);
+}
+
+function setTheme(dark: boolean): void {
+  applyThemeState(dark, true);
 }
 
 function toggleTheme(): void {
@@ -1002,9 +1022,8 @@ function initOdometer(): void {
 }
 
 function initPage(): void {
+  syncTheme();
   applyFontLevel();
-  const icon = $('.tool-dark-light-toggle i');
-  if (icon) icon.className = isDark() ? 'fa-regular fa-brightness' : 'fa-regular fa-moon';
 
   prepareCodeBlocks();
   bindImageViewer();
@@ -1206,6 +1225,9 @@ document.addEventListener('astro:before-swap', () => {
   closeSearch();
   closeViewer();
 });
+
+// Re-apply the theme as soon as the new body is in the DOM, before paint.
+document.addEventListener('astro:after-swap', syncTheme);
 
 if (theme.global?.singlePage) {
   let receivedPageLoad = false;
