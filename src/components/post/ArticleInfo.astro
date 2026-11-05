@@ -40,7 +40,7 @@ const updated = post.data.updated ? formatPostDate(post.data.updated) : null;
       <ul>
         {post.data.categories.map((category, index) => (
           <li>
-            {index > 0 && '| '}
+            {index > 0 && '> '}
             <a href={urlFor(`/categories/${slugify(category)}/`)}>{category}</a>&nbsp;
           </li>
         ))}
