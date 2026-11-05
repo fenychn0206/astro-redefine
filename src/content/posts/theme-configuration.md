@@ -13,7 +13,7 @@ sticky: 999
 description: Redefine for Astro 的简单配置指南：站点信息、主题选项、Markdown 特殊语法与数据文件。
 ---
 
-> 完整主题文档位于仓库的 `docs/zh/` 目录，包含快速开始、配置、内容、页面模板、插件和迁移指南。
+> 完整主题文档位于[仓库](https://github.com/fenychn0206/astro-redefine)的 `docs/zh/` 目录，包含快速开始、配置、内容、页面模板、插件和迁移指南。
 
 ## 配置文件
 

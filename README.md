@@ -1,13 +1,5 @@
 # Redefine for Astro
 
-[Hexo Theme Redefine](https://github.com/EvanNotFound/hexo-theme-redefine) 的 Astro 移植版。保留了原主题的视觉风格、页面模板、Markdown 排版和大部分特性，并用 Astro 的原生能力替换 Hexo 专用插件。
-
-- 使用 **Markdown content collections** 写作
-- 使用 **Tailwind CSS v4** 与原主题 Stylus 样式
-- 使用 **`:::` 指令** 取代 Hexo 的 Nunjucks/EJS 标签
-- 使用 **`src/config.user.ts`** 配置站点，**`src/config.default.ts`** 提供默认值
-- 静态构建、零运行时框架、支持深浅色、站内搜索、RSS、Mermaid、评论、图片查看器
-
 ## 快速开始
 
 ```bash
@@ -197,12 +189,6 @@ description: 第一篇文章。
 - Mermaid、代码复制、图片查看器、EXIF、相册、书签、说说、友链
 - ClientRouter 单页体验、响应式布局、多语言 UI
 
-## 参考
+---
 
-- 原主题：<https://github.com/EvanNotFound/hexo-theme-redefine>
-- 演示配置：<https://github.com/evannotfound/redefine-demo>
-- 主题文档：<https://redefine-docs.ohevan.com>
-
-## License
-
-原主题与本次移植均遵循 **GPL-3.0**，见 [LICENSE](./LICENSE)。
+<samp>code is licensed under <a href="LICENSE">GPL 3.0 LICENSE</a>, <br>docs are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons BY-SA 4.0</a>.</samp>
