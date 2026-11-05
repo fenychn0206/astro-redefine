@@ -39,8 +39,7 @@ const userConfig: DeepPartial<RedefineConfig> = {
       enable: true,
       style: 'default',
       links: [
-        { icon: 'github', url: 'https://github.com/withastro/astro' },
-        { icon: 'fa-solid fa-globe', url: 'https://astro.build' },
+        { icon: 'github', url: 'https://github.com/fenychn0206/astro-redefine' },
         { icon: 'fa-solid fa-rss', url: '/rss.xml' },
       ],
       qrs: [],
