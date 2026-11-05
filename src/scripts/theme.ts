@@ -94,6 +94,7 @@ function applyThemeState(dark: boolean, persist = false): void {
   if (persist) saveStatus({ isDark: dark });
   updateGiscusTheme(dark);
   updateUtterancesTheme(dark);
+  updateArtalkTheme(dark);
   renderMermaid(true);
 }
 
@@ -734,19 +735,116 @@ async function initGitalk(root: HTMLElement): Promise<void> {
   }).render(container);
 }
 
+function compactOptions<T extends Record<string, any>>(options: T): T {
+  return Object.fromEntries(
+    Object.entries(options).filter(([, value]) => value !== undefined && value !== null),
+  ) as T;
+}
+
+function resolveArtalkPageKey(value: string | undefined): string {
+  const mode = (value || 'pathname').trim();
+  if (!mode || mode === 'pathname') return location.pathname;
+  if (mode === 'url') return location.href;
+  if (mode === 'title') return document.title;
+  return mode;
+}
+
+function artalkAssets(config: any): { js: string; css: string } {
+  const server = String(config.server || '').replace(/\/+$/, '');
+  const version = String(config.version || '2.10.0');
+  const cdn = config.cdn || 'jsdelivr';
+
+  if (cdn === 'server') {
+    return { js: `${server}/dist/Artalk.js`, css: `${server}/dist/Artalk.css` };
+  }
+
+  if (cdn === 'custom') {
+    return {
+      js: config.jsUrl || `${server}/dist/Artalk.js`,
+      css: config.cssUrl || `${server}/dist/Artalk.css`,
+    };
+  }
+
+  const base =
+    cdn === 'cdnjs'
+      ? `https://cdnjs.cloudflare.com/ajax/libs/artalk/${version}`
+      : cdn === 'unpkg'
+        ? `https://unpkg.com/artalk@${version}/dist`
+        : `https://cdn.jsdelivr.net/npm/artalk@${version}/dist`;
+
+  return { js: `${base}/Artalk.js`, css: `${base}/Artalk.css` };
+}
+
+function updateArtalkTheme(dark: boolean): void {
+  const instance = (window as any).__redefineArtalk;
+  if (typeof instance?.setDarkMode === 'function') {
+    instance.setDarkMode(dark);
+  }
+}
+
 async function initArtalk(root: HTMLElement): Promise<void> {
   const config = theme.comment?.config?.artalk || {};
   if (!config.server || !config.site) return;
-  loadStylesheet('https://cdn.jsdelivr.net/npm/artalk/dist/Artalk.css', 'artalk-css');
-  await loadScript('https://cdn.jsdelivr.net/npm/artalk/dist/Artalk.js', 'artalk-script');
+
+  const assets = artalkAssets(config);
+  if (assets.css) loadStylesheet(assets.css, 'artalk-css');
+
+  try {
+    await loadScript(assets.js, 'artalk-script');
+  } catch (error) {
+    console.error('[redefine] artalk client failed to load', error);
+    return;
+  }
+
   const Artalk = (window as any).Artalk;
   if (!Artalk || !$('#artalk-comment', root)) return;
+
   (window as any).__redefineArtalk?.destroy?.();
-  (window as any).__redefineArtalk = Artalk.init({
+
+  const darkMode =
+    config.darkMode === 'auto' || config.darkMode === undefined
+      ? isDark()
+      : Boolean(config.darkMode);
+
+  const options = compactOptions({
     el: '#artalk-comment',
     server: config.server,
     site: config.site,
+    pageKey: resolveArtalkPageKey(config.pageKey),
+    pageTitle: config.pageTitle || root.dataset.pageTitle || document.title,
+    preferRemoteConf: config.preferRemoteConf,
+    locale: config.locale,
+    darkMode,
+    flatMode: config.flatMode,
+    nestMax: config.nestMax,
+    nestSort: config.nestSort,
+    placeholder: config.placeholder,
+    noComment: config.noComment,
+    sendBtn: config.sendBtn,
+    editorTravel: config.editorTravel,
+    emoticons: config.emoticons,
+    pagination: config.pagination,
+    heightLimit: config.heightLimit,
+    pvEl: config.pvEl,
+    countEl: config.countEl,
+    versionCheck: config.versionCheck,
+    imgUpload: config.imgUpload,
+    imgLazyLoad: config.imgLazyLoad,
+    preview: config.preview,
+    vote: config.vote,
+    voteDown: config.voteDown,
+    pageVote: config.pageVote,
+    uaBadge: config.uaBadge,
+    listSort: config.listSort,
+    reqTimeout: config.reqTimeout,
+    gravatar: config.gravatar,
   });
+
+  try {
+    (window as any).__redefineArtalk = Artalk.init(options);
+  } catch (error) {
+    console.error('[redefine] artalk init failed', error);
+  }
 }
 
 function initComments(): void {
@@ -1222,6 +1320,7 @@ window.addEventListener('scroll', () => {
 document.addEventListener('astro:before-swap', () => {
   if (typewriterTimer) window.clearTimeout(typewriterTimer);
   (window as any).__redefineWaline?.destroy?.();
+  (window as any).__redefineArtalk?.destroy?.();
   closeSearch();
   closeViewer();
 });

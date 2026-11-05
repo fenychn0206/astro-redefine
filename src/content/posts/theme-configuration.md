@@ -9,10 +9,9 @@ tags:
 categories:
   - 指南
   - Astro
+sticky: 999
 description: Redefine for Astro 的简单配置指南：站点信息、主题选项、Markdown 特殊语法与数据文件。
 ---
-
-Redefine for Astro 把站点与主题配置集中到一处，并把 Hexo 专用的标签语法替换为 Markdown 原生的 `:::` 指令。这篇文章简单介绍如何配置站点、编写文章，以及使用提示块、折叠、标签页和按钮等特殊语法。
 
 ## 配置文件
 
@@ -104,6 +103,7 @@ const userConfig: DeepPartial<RedefineConfig> = {
     defaultMode: 'light',
   },
 };
+```
 
 ## 编写文章
 
@@ -234,20 +234,58 @@ description: 第一篇文章。
 
 ## 评论、搜索与统计
 
-评论系统在 `src/config.user.ts` 的 `comment` 中切换。主题默认关闭评论；填入自己的服务地址后即可启用：
+演示站使用 **Artalk**，配置写在 `src/config.user.ts` 的 `comment` 中：
 
 ```ts
 comment: {
   enable: true,
-  system: 'waline',
+  system: 'artalk',
   config: {
-    waline: {
-      serverUrl: 'https://your-waline.example.com',
-      lang: 'zh-CN',
+    artalk: {
+      // Artalk 后端地址
+      server: 'https://artalk.ooowl.net',
+      // 必须与 Artalk 控制台中创建的站点名称一致
+      site: 'Theme Redefine',
+      pageKey: 'pathname',
+      pageTitle: '',
+      locale: 'zh-CN',
+      darkMode: 'auto',
+      flatMode: 'auto',
+      nestMax: 2,
+      nestSort: 'DATE_ASC',
+      pagination: { pageSize: 20, readMore: true, autoLoad: true },
+      heightLimit: { content: 300, children: 400, scrollable: false },
+      version: '2.10.0',
+      cdn: 'server',
     },
   },
 }
 ```
+
+`server` 和 `site` 是必填项。`site` 为空或与后端站点不一致时，Artalk 会返回“未找到站点”。
+
+> 演示站使用 `https://artalk.ooowl.net`，站点名为 `Theme Redefine`。部署时需要在 Artalk 控制台创建同名站点，并允许站点域名（例如 `https://astro-redefine.ooowl.net`）跨域访问，否则浏览器会拦截 `/api/v2/conf`。
+
+常用 Artalk 配置：
+
+| 字段 | 作用 |
+| --- | --- |
+| `pageKey` | 页面唯一标识，支持 `pathname`、`url`、`title` 或固定路径 |
+| `pageTitle` | 评论列表中显示的页面标题，留空时使用页面标题 |
+| `preferRemoteConf` | 是否优先使用 Artalk 控制台中的远程配置 |
+| `locale` | 界面语言，例如 `zh-CN`、`en` |
+| `darkMode` | `auto` 跟随主题明暗模式，也可设为 `true` / `false` |
+| `flatMode` | 平铺模式，`auto` 会在小屏自动开启 |
+| `nestMax` / `nestSort` | 最大嵌套层数与嵌套排序 |
+| `pagination` | `pageSize`、`readMore`、`autoLoad` |
+| `heightLimit` | 评论与子评论内容限高 |
+| `placeholder` / `sendBtn` / `noComment` | 输入框、发送按钮和空评论文案 |
+| `emoticons` | 表情包配置，`true` 使用默认表情包 |
+| `pvEl` / `countEl` | 页面浏览量与评论数绑定元素 |
+| `version` / `cdn` | 客户端版本与 CDN，`cdn: 'server'` 使用 Artalk 后端内置客户端 |
+| `gravatar` | Gravatar 镜像与参数 |
+
+主题会在明暗模式切换时同步调用 Artalk 的 `setDarkMode`。其他评论系统（Waline、Giscus、Twikoo、Gitalk、Utterances）仍可在 `comment.system` 中切换。
 
 站内搜索由主题自动生成 `search.json`，无需额外插件；在 `src/config.user.ts` 的 `navbar.search.enable` 中开启即可。页脚访问量使用 `global.websiteCounter`，默认接入 vercount。
 

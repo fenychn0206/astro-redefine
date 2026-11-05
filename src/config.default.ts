@@ -1,9 +1,3 @@
-/**
- * Theme defaults.
- *
- * This file intentionally contains no site-specific data. It is the fallback
- * used by `src/config.ts`; edit `src/config.user.ts` instead.
- */
 export type ThemeMode = 'light' | 'dark';
 
 export interface NavLink {
@@ -224,7 +218,42 @@ export interface RedefineConfig {
         inputPosition?: string;
         loading?: string;
       };
-      artalk: { server?: string; site?: string };
+      artalk: {
+        server?: string;
+        site?: string;
+        pageKey?: string;
+        pageTitle?: string;
+        preferRemoteConf?: boolean;
+        locale?: string;
+        darkMode?: boolean | 'auto';
+        flatMode?: boolean | 'auto';
+        nestMax?: number;
+        nestSort?: 'DATE_ASC' | 'DATE_DESC' | 'VOTE_UP_DESC';
+        placeholder?: string;
+        noComment?: string;
+        sendBtn?: string;
+        editorTravel?: boolean;
+        emoticons?: boolean | string | Record<string, unknown>;
+        pagination?: { pageSize?: number; readMore?: boolean; autoLoad?: boolean };
+        heightLimit?: { content?: number; children?: number; scrollable?: boolean };
+        pvEl?: string;
+        countEl?: string;
+        versionCheck?: boolean;
+        imgUpload?: boolean;
+        imgLazyLoad?: 'native' | 'data-src' | boolean;
+        preview?: boolean;
+        vote?: boolean;
+        voteDown?: boolean;
+        pageVote?: boolean;
+        uaBadge?: boolean;
+        listSort?: boolean;
+        reqTimeout?: number;
+        gravatar?: { mirror?: string; params?: string };
+        version?: string;
+        cdn?: 'jsdelivr' | 'unpkg' | 'cdnjs' | 'server' | 'custom';
+        jsUrl?: string;
+        cssUrl?: string;
+      };
       utterances: {
         repo?: string;
         issueTerm?: string;
@@ -450,7 +479,40 @@ export const defaultConfig: RedefineConfig = {
         inputPosition: 'bottom',
         loading: 'lazy',
       },
-      artalk: {},
+      artalk: {
+        server: '',
+        site: '',
+        pageKey: 'pathname',
+        pageTitle: '',
+        preferRemoteConf: false,
+        locale: 'auto',
+        darkMode: 'auto',
+        flatMode: 'auto',
+        nestMax: 2,
+        nestSort: 'DATE_ASC',
+        placeholder: '键入内容...',
+        noComment: '「此时无声胜有声」',
+        sendBtn: '发送评论',
+        editorTravel: true,
+        emoticons: true,
+        pagination: { pageSize: 20, readMore: true, autoLoad: true },
+        heightLimit: { content: 300, children: 400, scrollable: false },
+        pvEl: '.artalk-pv-count',
+        countEl: '.artalk-comment-count',
+        versionCheck: true,
+        imgUpload: true,
+        imgLazyLoad: false,
+        preview: true,
+        vote: true,
+        voteDown: false,
+        pageVote: true,
+        uaBadge: false,
+        listSort: true,
+        reqTimeout: 15000,
+        gravatar: { mirror: 'https://www.gravatar.com/avatar/', params: 'sha256=1&d=mp&s=240' },
+        version: '2.10.1',
+        cdn: 'jsdelivr',
+      },
       utterances: {
         issueTerm: 'pathname',
         themeLight: 'github-light',

@@ -75,11 +75,23 @@ const userConfig: DeepPartial<RedefineConfig> = {
     codeBlock: { copy: true, style: 'mac' },
     recommendation: { enable: true },
   },
-  comment: { enable: true, system: 'waline' },
+  comment: {
+    enable: true,
+    system: 'artalk',
+    config: {
+      artalk: {
+        server: 'https://artalk.example.com',
+        site: 'Theme Redefine',
+        pageKey: 'pathname',
+      },
+    },
+  },
 };
 ```
 
 规则：对象会递归合并，数组（导航、社交链接等）会整体替换默认值。
+
+演示站使用 Artalk 评论系统，服务器地址和站点名在 `config.user.ts` 中设置。Artalk 后端需要允许站点域名跨域访问，并在控制台创建同名站点。
 
 完整说明见演示文章：[`src/content/posts/theme-configuration.md`](./src/content/posts/theme-configuration.md)。
 

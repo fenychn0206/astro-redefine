@@ -1,10 +1,3 @@
-/**
- * User configuration.
- *
- * Edit this file to customise the site. Every value here is deep-merged over
- * `src/config.default.ts`, so you only need to keep the options you want to
- * change. Arrays (navigation links, social links, …) replace the defaults.
- */
 import type { DeepPartial, RedefineConfig } from './config.default';
 
 const userConfig: DeepPartial<RedefineConfig> = {
@@ -16,7 +9,7 @@ const userConfig: DeepPartial<RedefineConfig> = {
     author: 'Redefine',
     language: 'en',
     timezone: 'Asia/Shanghai',
-    url: 'https://astro-redefine.example.com',
+    url: 'https://astro-redefine.ooowl.net',
     base: '/',
     postsPerPage: 10,
   },
@@ -57,9 +50,9 @@ const userConfig: DeepPartial<RedefineConfig> = {
     links: {
       Home: { path: '/', icon: 'fa-regular fa-house' },
       Archives: { path: '/archives', icon: 'fa-regular fa-archive' },
-      Docs: { path: 'https://docs.astro.build', icon: 'fa-regular fa-book' },
+      Docs: { path: '/2026/11/05/theme-configuration/', icon: 'fa-regular fa-book' },
       Github: {
-        path: 'https://github.com/withastro/astro',
+        path: 'https://github.com/fenychn0206/astro-redefine',
         icon: 'fa-brands fa-github',
       },
       More: {
@@ -95,6 +88,42 @@ const userConfig: DeepPartial<RedefineConfig> = {
       mobileLimit: 2,
       placeholder: '/images/wallhaven-wqery6-light.webp',
       skipDirs: [],
+    },
+  },
+  comment: {
+    enable: true,
+    system: 'artalk',
+    config: {
+      artalk: {
+        // Artalk 后端地址；需在控制台创建同名站点，并允许本站 Origin 跨域。
+        server: 'https://artalk.ooowl.net',
+        site: 'Theme Redefine',
+        pageKey: 'pathname',
+        pageTitle: '',
+        preferRemoteConf: false,
+        locale: 'zh-CN',
+        darkMode: 'auto',
+        flatMode: 'auto',
+        nestMax: 2,
+        nestSort: 'DATE_ASC',
+        sendBtn: '发送评论',
+        placeholder: '欢迎交流，请文明评论...',
+        editorTravel: true,
+        emoticons: true,
+        pagination: { pageSize: 20, readMore: true, autoLoad: true },
+        heightLimit: { content: 300, children: 400, scrollable: false },
+        versionCheck: true,
+        imgUpload: false,
+        imgLazyLoad: false,
+        preview: true,
+        vote: true,
+        pageVote: true,
+        listSort: true,
+        reqTimeout: 15000,
+        gravatar: { mirror: 'https://weavatar.com/avatar/', params: 'sha256=1&d=mp&s=240' },
+        version: '2.10.0',
+        cdn: 'server',
+      },
     },
   },
   footer: {
