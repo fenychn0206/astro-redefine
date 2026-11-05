@@ -104,6 +104,9 @@ const themeVars = `
 .home-banner-container .description p i, .home-banner-container .description p span { font-size: ${config.homeBanner.textStyle.subtitleSize}; }
 .home-banner-container .content { min-height: 90vh; }
 ${headingSizes}
+
+${config.home.sidebar.position === 'right' ? '@media (min-width: 769px) { .home-content-container { margin-left: 38px; margin-right: 0; } }' : '@media (min-width: 769px) { .home-content-container { margin-right: 38px; margin-left: 0; } }'}
+${config.global.hover.scale ? '.home-article-item:hover { transform: scale(1.015); }' : ''}
 ${config.global.fonts.chinese.enable && config.global.fonts.chinese.family ? `html, body { font-family: '${config.global.fonts.chinese.family}', var(--font-geist), sans-serif; }` : ''}
 ${config.global.fonts.english.enable && config.global.fonts.english.family ? `html, body { font-family: '${config.global.fonts.english.family}', var(--font-geist), sans-serif; }` : ''}
 ${config.global.fonts.title.enable && config.global.fonts.title.family ? `.navbar-container, .home-sidebar-container .site-name, .home-banner-container { font-family: '${config.global.fonts.title.family}', 'Chillax-Variable', sans-serif; }` : ''}

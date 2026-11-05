@@ -103,7 +103,7 @@ const panguScript = config.articles.pangu ? urlFor('/js/libs/pangu.min.js') : ''
       <script is:inline defer src={urlFor('/js/libs/APlayer.min.js')}></script>
     )}
   </head>
-  <body data-page={Astro.url.pathname} data-base={urlFor('/')}>
+  <body data-page={Astro.url.pathname} data-base={urlFor('/')} data-code-style={config.articles.codeBlock.style}>
     <ProgressBar />
     {config.global.preloader.enable && <Preloader />}
 

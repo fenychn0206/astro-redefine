@@ -251,6 +251,23 @@ html.dark .astro-code span {
   display: none;
 }
 
+body[data-code-style='simple'] .code-container {
+  padding-top: 0;
+  background: var(--highlight-background);
+}
+body[data-code-style='simple'] .code-container::before,
+body[data-code-style='simple'] .code-container::after {
+  display: none;
+}
+
+.tagcloud-content > a {
+  display: inline-block;
+  box-sizing: border-box;
+  padding: 0.7rem 0.5rem;
+  line-height: 0.7;
+  margin: 0.25rem;
+}
+
 /* directive-generated callouts keep normal Markdown spacing */
 .callout .callout__content > :first-child {
   margin-top: 0;
