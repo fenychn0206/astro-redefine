@@ -270,13 +270,13 @@ const config: RedefineConfig = {
     title: 'Theme Redefine',
     subtitle: 'Redefine Theme Demo Site',
     description:
-      'This is the Astro port of Hexo Theme Redefine. A simple, fast and pure theme for writers.',
+      'A simple, fast and pure Astro theme for writers.',
     keywords:
       'Astro, Theme, Redefine, Demo, Site, astro-theme-redefine, blog, Markdown',
-    author: 'EvanNotFound',
+    author: 'Redefine',
     language: 'en',
     timezone: 'Asia/Shanghai',
-    url: 'https://redefine.ohevan.com',
+    url: 'https://astro-redefine.example.com',
     base: '/',
     dateFormat: 'YYYY-MM-DD',
     timeFormat: 'HH:mm:ss',
@@ -354,15 +354,9 @@ const config: RedefineConfig = {
       enable: true,
       style: 'default',
       links: [
-        {
-          icon: 'github',
-          url: 'https://github.com/EvanNotFound/hexo-theme-redefine',
-        },
-        {
-          icon: 'npm',
-          url: 'https://www.npmjs.com/package/hexo-theme-redefine',
-        },
-        { icon: 'email', url: 'mailto:contact@ohevan.com' },
+        { icon: 'github', url: 'https://github.com/withastro/astro' },
+        { icon: 'fa-solid fa-globe', url: 'https://astro.build' },
+        { icon: 'fa-solid fa-rss', url: '/rss.xml' },
       ],
       qrs: [],
     },
@@ -374,17 +368,17 @@ const config: RedefineConfig = {
     links: {
       Home: { path: '/', icon: 'fa-regular fa-house' },
       Archives: { path: '/archives', icon: 'fa-regular fa-archive' },
-      Docs: { path: 'https://redefine-docs.ohevan.com', icon: 'fa-regular fa-book' },
+      Docs: { path: 'https://docs.astro.build', icon: 'fa-regular fa-book' },
       Github: {
-        path: 'https://github.com/EvanNotFound/hexo-theme-redefine',
+        path: 'https://github.com/withastro/astro',
         icon: 'fa-brands fa-github',
       },
-      Links: {
+      More: {
         icon: 'fa-regular fa-link',
         submenus: {
-          About: 'https://ohevan.com/about',
-          Blog: 'https://ohevan.com',
-          Showcase: '/showcase',
+          Showcase: '/showcase/',
+          Bookmarks: '/bookmarks/',
+          Essays: '/essays/',
         },
       },
     },
@@ -458,14 +452,13 @@ const config: RedefineConfig = {
     },
   },
   comment: {
-    enable: true,
+    enable: false,
     system: 'waline',
     config: {
       waline: {
-        serverUrl: 'https://redefine-waline.ohevan.com',
+        serverUrl: '',
         lang: 'zh-CN',
         emoji: [],
-        recaptchaV3Key: 'wasd',
         reaction: false,
       },
       gitalk: {},
@@ -490,7 +483,7 @@ const config: RedefineConfig = {
   footer: {
     runtime: true,
     icon: '<i class="fa-solid fa-code-pull-request"></i>',
-    start: '2022/8/17 11:45:14',
+    start: '2026/11/05 00:00:00',
     statistics: true,
     icp: { enable: false },
   },

@@ -1,7 +1,7 @@
 ---
 title: "The Evolving Landscape of Music: A Journey Through Time and Technology"
 date: 2023-11-12 12:30:00
-thumbnail: "https://assets.ohevan.com/img/dcb9eb79efc29322f65f96d9d4ae7782.jpeg"
+thumbnail: "https://picsum.photos/seed/dcb9eb79efc29322f65f96d9d4ae7782/800/600"
 tags:
     - "Music History"
     - "Technology in Music"

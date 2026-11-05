@@ -56,9 +56,9 @@ src/
 site: {
   title: 'Theme Redefine',
   subtitle: 'Redefine Theme Demo Site',
-  author: 'EvanNotFound',
+  author: 'Redefine',
   language: 'en',
-  url: 'https://redefine.ohevan.com',
+  url: 'https://astro-redefine.example.com',
   postsPerPage: 10,
 },
 colors: { primary: '#A31F34', defaultMode: 'light' },

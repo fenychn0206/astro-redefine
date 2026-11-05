@@ -6,7 +6,7 @@ tags:
     - "Hexo"
     - "Hexo Theme"
     - "Hexo Theme Redefine"
-thumbnail: https://assets.ohevan.com/img/d00ebf818778f3aad141173167ad0e52.png
+thumbnail: https://picsum.photos/seed/d00ebf818778f3aad141173167ad0e52/800/600
 sticky: 999
 categories: 
     - "Demo"
@@ -34,7 +34,7 @@ categories:
 
 这是一段文本
 
-![Screen Shot 2022-10-02 at 9.26.37 PM](https://assets.ohevan.com/img/d4fe8bc5f18fc77cb2064c99c64dc227.png)
+![Screen Shot 2022-10-02 at 9.26.37 PM](https://picsum.photos/seed/d4fe8bc5f18fc77cb2064c99c64dc227/800/600)
 
 `行内代码`
 
@@ -64,7 +64,7 @@ print("代码高亮")
 
 ## Note Large大号提示块
 
-::button[Note Large大号提示块文档]{href="https://redefine-docs.ohevan.com/modules/notes#%E5%A4%A7%E5%8F%B7%E6%8F%90%E7%A4%BA%E5%9D%97" icon="fa-solid fa-book" size="lg" align="center"}
+::button[Note Large大号提示块文档]{icon="fa-solid fa-book" size="lg" align="center"}
 
 :::notel{type="default" title="信息"}
 
@@ -116,7 +116,7 @@ print("代码高亮")
 
 ## Note 小号提示块
 
-::button[Note 小号提示块文档]{href="https://redefine-docs.ohevan.com/modules/notes#%E5%B0%8F%E5%8F%B7%E6%8F%90%E7%A4%BA%E5%9D%97" icon="fa-solid fa-book" size="lg" align="center"}
+::button[Note 小号提示块文档]{icon="fa-solid fa-book" size="lg" align="center"}
 
 :::note{type="default"}
 
@@ -168,7 +168,7 @@ danger 提示块标签
 
 ## Folding 折叠模块
 
-::button[Folding 折叠模块文档]{href="https://redefine-docs.ohevan.com/modules/folding" icon="fa-solid fa-book" size="lg" align="center"}
+::button[Folding 折叠模块文档]{icon="fa-solid fa-book" size="lg" align="center"}
 
 ::::folding[Folding 测试： 点击查看更多]{style="yellow"}
 
@@ -222,7 +222,7 @@ tip 提示块标签
 
 ## Tabs 分栏模块
 
-::button[Tabs 分栏模块文档]{href="https://redefine-docs.ohevan.com/modules/tabs" icon="fa-solid fa-book" size="lg" align="center"}
+::button[Tabs 分栏模块文档]{icon="fa-solid fa-book" size="lg" align="center"}
 
 ::::tabs{name="First unique name"}
 
@@ -258,11 +258,11 @@ This is Tab 3.
 
 regular 按钮适合独立于段落之外：
 
-::button[示例博客]{href="https://www.ohevan.com" icon="fa-solid fa-play-circle"}
+::button[返回首页]{href="/" icon="fa-solid fa-play-circle"}
 
-::button[示例博客]{href="https://www.ohevan.com" icon="fa-solid fa-play-circle"}
+::button[返回首页]{href="/" icon="fa-solid fa-play-circle"}
 
 large 按钮更具有强调作用，建议搭配 center 使用：
 
-::button[Button 按钮模块 开始使用]{href="https://redefine-docs.ohevan.com/modules/buttons" icon="fa-solid fa-book" size="lg" align="center"}
+::button[Button 按钮模块 开始使用]{icon="fa-solid fa-book" size="lg" align="center"}
 

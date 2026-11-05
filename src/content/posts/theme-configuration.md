@@ -12,7 +12,7 @@ categories:
 description: Redefine for Astro 的简单配置指南：站点信息、主题选项、Markdown 特殊语法与数据文件。
 ---
 
-Redefine for Astro 把原 Hexo 主题的配置集中到了一处，并把 Hexo 专用的标签语法替换为 Markdown 原生的 `:::` 指令。这篇文章简单介绍如何配置站点、编写文章，以及使用提示块、折叠、标签页和按钮等特殊语法。
+Redefine for Astro 把站点与主题配置集中到一处，并把 Hexo 专用的标签语法替换为 Markdown 原生的 `:::` 指令。这篇文章简单介绍如何配置站点、编写文章，以及使用提示块、折叠、标签页和按钮等特殊语法。
 
 ## 配置文件
 
