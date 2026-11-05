@@ -406,8 +406,10 @@ async function renderMermaid(reset = false): Promise<void> {
   }
 }
 
+let mermaidTimer = 0;
 function initMermaid(): void {
   if (!theme.plugins?.mermaid?.enable) return;
+  if (mermaidTimer) window.clearInterval(mermaidTimer);
   let attempts = 0;
   const timer = window.setInterval(() => {
     attempts += 1;
@@ -418,6 +420,7 @@ function initMermaid(): void {
       window.clearInterval(timer);
     }
   }, 200);
+  mermaidTimer = timer;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -831,6 +834,7 @@ function initEssayDates(): void {
   });
 }
 
+let bookmarkScrollHandler: (() => void) | null = null;
 function initBookmarkNav(): void {
   const items = $$('.bookmark-nav-item');
   const sections = $$('section[id]');
@@ -847,6 +851,8 @@ function initBookmarkNav(): void {
       item.classList.toggle('active', Boolean(current && item.dataset.category === current.id));
     });
   };
+  if (bookmarkScrollHandler) window.removeEventListener('scroll', bookmarkScrollHandler);
+  bookmarkScrollHandler = update;
   window.addEventListener('scroll', update, { passive: true });
   update();
 }
@@ -856,11 +862,13 @@ function initBookmarkNav(): void {
 /* -------------------------------------------------------------------------- */
 
 let typewriterTimer = 0;
+let typewriterToken = 0;
 
 function initTypewriter(): void {
   const target = $('#subtitle');
   if (!target) return;
   if (typewriterTimer) window.clearTimeout(typewriterTimer);
+  const token = ++typewriterToken;
 
   const subtitle = theme.homeBanner?.subtitle || {};
   const strings: string[] = Array.isArray(subtitle.text)
@@ -871,6 +879,7 @@ function initTypewriter(): void {
   const hitokoto = subtitle.hitokoto || {};
 
   const start = async () => {
+    if (token !== typewriterToken) return;
     if (hitokoto.enable && hitokoto.api) {
       try {
         const response = await fetch(hitokoto.api);
@@ -881,7 +890,7 @@ function initTypewriter(): void {
         /* ignore */
       }
     }
-    if (!strings.length) return;
+    if (!strings.length || token !== typewriterToken) return;
 
     const typeSpeed = Number(subtitle.typingSpeed ?? 100);
     const backSpeed = Number(subtitle.backingSpeed ?? 80);
@@ -894,6 +903,7 @@ function initTypewriter(): void {
     let deleting = false;
 
     const tick = () => {
+      if (token !== typewriterToken) return;
       const current = strings[stringIndex] || '';
       if (!deleting) {
         charIndex += 1;
@@ -928,8 +938,10 @@ function initTypewriter(): void {
 /* Misc                                                                       */
 /* -------------------------------------------------------------------------- */
 
+let panguTimer = 0;
 function initPangu(): void {
   if (!theme.articles?.pangu) return;
+  if (panguTimer) window.clearInterval(panguTimer);
   let attempts = 0;
   const timer = window.setInterval(() => {
     attempts += 1;
@@ -945,6 +957,7 @@ function initPangu(): void {
       window.clearInterval(timer);
     }
   }, 250);
+  panguTimer = timer;
 }
 
 function initAPlayer(): void {
@@ -1195,8 +1208,14 @@ document.addEventListener('astro:before-swap', () => {
 });
 
 if (theme.global?.singlePage) {
-  document.addEventListener('astro:page-load', initPage);
-  window.setTimeout(initPage, 0);
+  let receivedPageLoad = false;
+  document.addEventListener('astro:page-load', () => {
+    receivedPageLoad = true;
+    initPage();
+  });
+  window.setTimeout(() => {
+    if (!receivedPageLoad) initPage();
+  }, 300);
 } else {
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initPage, { once: true });
