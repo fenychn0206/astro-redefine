@@ -1,5 +1,7 @@
 # Redefine for Astro
 
+本主题系 [Hexo Theme Redefine](https://github.com/EvanNotFound/hexo-theme-redefine) 的 Astro 移植版。
+
 ## 快速开始
 
 ```bash
