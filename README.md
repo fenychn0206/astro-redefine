@@ -2,7 +2,7 @@
 
 [Hexo Theme Redefine](https://github.com/EvanNotFound/hexo-theme-redefine) 的 Astro 移植版。保留了原主题的视觉风格、页面模板、Markdown 排版和大部分特性，并用 Astro 的原生能力替换 Hexo 专用插件。
 
-- 使用 **Markdown / MDX-free content collections** 写作
+- 使用 **Markdown content collections** 写作
 - 使用 **Tailwind CSS v4** 与原主题 Stylus 样式
 - 使用 **`:::` 指令** 取代 Hexo 的 Nunjucks/EJS 标签
 - 使用 **`src/config.user.ts`** 配置站点，**`src/config.default.ts`** 提供默认值
@@ -91,9 +91,24 @@ const userConfig: DeepPartial<RedefineConfig> = {
 
 规则：对象会递归合并，数组（导航、社交链接等）会整体替换默认值。
 
-演示站使用 Artalk 评论系统（`https://artalk.ooowl.net`，站点名 `redefine-demo`）。Artalk 后端只允许 `https://astro-redefine.ooowl.net` 跨域，本地 `localhost` 开发时评论请求会被 CORS 拦截。
+演示站使用 Artalk 评论系统。评论后端地址、站点名和跨域配置见 `docs/zh/configuration/comments.md`。
 
 完整说明见演示文章：[`src/content/posts/theme-configuration.md`](./src/content/posts/theme-configuration.md)。
+
+## 文档
+
+完整文档位于 `docs/`：
+
+- 中文：[docs/zh/index.md](./docs/zh/index.md)
+- English: [docs/en/index.md](./docs/en/index.md)
+- [快速开始](./docs/zh/getting-started.md)
+- [配置概览](./docs/zh/configuration/index.md)
+- [Markdown 与特殊语法](./docs/zh/content/markdown.md)
+- [页面模板](./docs/zh/pages.md)
+- [插件](./docs/zh/plugins.md)
+- [部署](./docs/zh/deployment.md)
+
+文档中的示例地址统一使用 `https://*.example.com` 占位域名，请替换为真实地址。
 
 ## 编写文章
 

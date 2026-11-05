@@ -13,6 +13,8 @@ sticky: 999
 description: Redefine for Astro 的简单配置指南：站点信息、主题选项、Markdown 特殊语法与数据文件。
 ---
 
+> 完整主题文档位于仓库的 `docs/zh/` 目录，包含快速开始、配置、内容、页面模板、插件和迁移指南。
+
 ## 配置文件
 
 配置拆分为两个文件，并保留一个合并入口：
@@ -243,9 +245,9 @@ comment: {
   config: {
     artalk: {
       // Artalk 后端地址
-      server: 'https://artalk.ooowl.net',
+      server: 'https://artalk.example.com',
       // 必须与 Artalk 控制台中的站点名称一致
-      site: 'redefine-demo',
+      site: 'example-site',
       pageKey: 'pathname',
       pageTitle: '',
       locale: 'zh-CN',
@@ -264,7 +266,7 @@ comment: {
 
 `server` 和 `site` 是必填项。`site` 为空或与后端站点不一致时，Artalk 会返回“未找到站点”。
 
-> 演示站使用 `https://artalk.ooowl.net`，站点名为 `redefine-demo`。Artalk 服务端只允许 `https://astro-redefine.ooowl.net` 跨域，因此本地 `localhost` 开发时评论请求会被浏览器拦截；部署到该域名后可正常加载。
+> 演示站使用 Artalk。部署时请替换 `server` 和 `site`，在 Artalk 控制台创建同名站点，并允许站点域名跨域访问；本地开发时还需要额外允许 `http://localhost:4321`。
 
 常用 Artalk 配置：
 

@@ -1,0 +1,17 @@
+{
+  "title": "Redefine for Astro 文档",
+  "pages": [
+    "index",
+    "getting-started",
+    "---配置---",
+    "configuration",
+    "---内容---",
+    "content",
+    "pages",
+    "---扩展---",
+    "plugins",
+    "deployment",
+    "migrate-from-hexo",
+    "thanks"
+  ]
+}

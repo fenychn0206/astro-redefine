@@ -1,0 +1,17 @@
+{
+  "title": "Redefine for Astro Docs",
+  "pages": [
+    "index",
+    "getting-started",
+    "---Configuration---",
+    "configuration",
+    "---Content---",
+    "content",
+    "pages",
+    "---Extensions---",
+    "plugins",
+    "deployment",
+    "migrate-from-hexo",
+    "thanks"
+  ]
+}
