@@ -1,4 +1,6 @@
 ---
+import pkg from '../../../package.json';
+
 import config from '../../config';
 import { useTranslations } from '../../lib/i18n';
 import { getAllPosts, getWordCount } from '../../lib/posts';
@@ -56,7 +58,15 @@ const number = new Intl.NumberFormat('en-US');
       />
       <span class="text-sm lg:block">
         {t('theme')}&nbsp;
-        <span class="text-base">Redefine for Astro v1.0.0</span>
+        <a
+          class="text-base"
+          href="https://github.com/fenychn0206/astro-redefine"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Redefine
+        </a>
+        &nbsp;<span class="text-base">v{pkg.version}</span>
       </span>
     </div>
 
