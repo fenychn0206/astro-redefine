@@ -193,5 +193,5 @@ description: 第一篇文章。
 
 ---
 
-> Made with ❤️ by **Frederick Chen** ([@fenychn0206](https://github.com/fenychn0206)) | [Blog](https;//www.ooowl.net) · [Twitter](https://x.com/fenychn0206) · [Sponsor(Afdian)](https://afdian.com/a/fenychn0206)
+> Made with ❤️ by **Frederick Chen** ([@fenychn0206](https://github.com/fenychn0206)) | [Blog](https://www.ooowl.net) · [Twitter](https://x.com/fenychn0206) · [Sponsor(Afdian)](https://afdian.com/a/fenychn0206)
 > <br>Code is licensed under [GPL 3.0 LICENSE](LICENSE) and docs are licensed under [Creative Commons BY-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
