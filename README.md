@@ -193,4 +193,6 @@ description: 第一篇文章。
 
 ---
 
+> Made with ❤️ by [Frederick Chen](https;//github.com/fenychn0206)
+
 <samp>code is licensed under <a href="LICENSE">GPL 3.0 LICENSE</a>, <br>docs are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons BY-SA 4.0</a>.</samp>
